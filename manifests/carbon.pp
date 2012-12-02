@@ -11,6 +11,7 @@ class graphite::carbon {
   file { '/etc/init.d/carbon':
     ensure => present,
     source => 'puppet:///modules/graphite/carbon',
+    mode   => '0555',
   }
 
   file { '/opt/graphite/conf/carbon.conf':
