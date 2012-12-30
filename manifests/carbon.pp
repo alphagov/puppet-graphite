@@ -9,8 +9,13 @@ class graphite::carbon {
   }
 
   file { '/etc/init.d/carbon':
+    ensure => link,
+    target => '/lib/init/upstart-job',
+  }
+
+  file { '/etc/init/carbon.conf':
     ensure => present,
-    source => 'puppet:///modules/graphite/carbon',
+    source => 'puppet:///modules/graphite/carbon.conf',
     mode   => '0555',
   }
 
@@ -35,7 +40,13 @@ class graphite::carbon {
   }
 
   service { 'carbon':
-    ensure  => running,
-    require => File['/etc/init.d/carbon'],
+    ensure     => running,
+    hasstatus  => true,
+    hasrestart => true,
+    provider   => upstart,
+    require    => [
+      File['/etc/init/carbon.conf'],
+      File['/etc/init.d/carbon'],
+    ],
   }
 }
