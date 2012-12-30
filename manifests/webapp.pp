@@ -4,7 +4,7 @@ class graphite::webapp (
 
   file { ['/opt/graphite/storage', '/opt/graphite/storage/whisper']:
     owner     => 'www-data',
-    subscribe => Package['graphite-web'],
+    subscribe => Exec['install-graphite-web'],
     mode      => '0775',
   }
 
@@ -36,7 +36,7 @@ class graphite::webapp (
     ensure    => 'directory',
     owner     => 'www-data',
     mode      => '0775',
-    subscribe => Package['graphite-web'],
+    subscribe => Exec['install-graphite-web'],
     notify    => Service['httpd'],
   }
 
@@ -71,7 +71,12 @@ class graphite::webapp (
       ensure => latest;
   }
 
-  package { ['whisper', 'graphite-web']:
+  exec { 'install-graphite-web':
+    command => 'pip install graphite-web',
+    creates => '/opt/graphite/webapp/graphite';
+  }
+
+  package { 'whisper':
     ensure   => installed,
     provider => pip,
   }

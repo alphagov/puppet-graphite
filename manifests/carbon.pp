@@ -3,9 +3,9 @@ class graphite::carbon {
     ensure => latest
   }
 
-  package { 'carbon':
-    ensure   => installed,
-    provider => pip,
+  exec { 'install-carbon':
+    command  => 'pip install carbon',
+    creates => '/opt/graphite/lib/carbon';
   }
 
   file { '/etc/init.d/carbon':
@@ -23,14 +23,14 @@ class graphite::carbon {
     ensure    => present,
     content   => template('graphite/carbon.conf'),
     notify    => Service['carbon'],
-    subscribe => Package['carbon'],
+    subscribe => Exec['install-carbon'],
   }
 
   file { '/opt/graphite/conf/storage-schemas.conf':
     ensure    => present,
     source    => 'puppet:///modules/graphite/storage-schemas.conf',
     notify    => Service['carbon'],
-    subscribe => Package['carbon'],
+    subscribe => Exec['install-carbon'],
   }
 
   file { '/var/log/carbon':
