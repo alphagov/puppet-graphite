@@ -12,7 +12,12 @@ Nice and simple, mainly because it's not yet very configurable.
 
 ## Configuration
 
-Non to speak of yet, this is the first working version of this module.
+If you want to run the web interface on a port other than 80 you can
+pass this in like so:
+
+    class { 'graphite':
+      port => 9000,
+    }
 
 ## Another Graphite module?
 
