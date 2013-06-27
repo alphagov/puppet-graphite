@@ -13,7 +13,7 @@ class graphite::install {
     'python-support',
     'python-pip',
   ])
-
+  Package['python-pip'] -> Package <| provider == 'pip' and ensure != absent and ensure != purged |>
 
   package { ['whisper','carbon','graphite-web']:
     ensure   => installed,
