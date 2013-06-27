@@ -53,7 +53,7 @@ class graphite::config {
     ensure    => 'directory',
     owner     => 'www-data',
     mode      => '0775',
-    subscribe => Exec['install-graphite-web'],
+    subscribe => Package['graphite-web'],
   }
 
   file { '/opt/graphite/webapp/graphite/local_settings.py':

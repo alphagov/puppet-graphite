@@ -1,6 +1,6 @@
 class graphite::install {
 
-  package {[
+  ensure_packages([
     'python-ldap',
     'python-cairo',
     'python-django',
@@ -12,9 +12,8 @@ class graphite::install {
     'python-pysqlite2',
     'python-support',
     'python-pip',
-  ]:
-    ensure => latest;
-  }
+  ])
+
 
   package { ['whisper','carbon','graphite-web']:
     ensure   => installed,
