@@ -19,4 +19,9 @@ describe 'graphite', :type => :class do
     it { should contain_file('/opt/graphite/webapp/graphite/initial_data.json').with_content(/should be a hash/) }
   end
 
+  context 'with different root dir' do
+    let(:params) { {'root_dir' => '/var/lib/graphite' }}
+    it { should contain_file('/var/lib/graphite/webapp/graphite/initial_data.json') }
+  end
+
 end
