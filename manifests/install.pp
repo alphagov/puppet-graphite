@@ -55,6 +55,33 @@ class graphite::install {
     ],
   }
 
+  # Manually patch graphite to support cairocffi, a cairo binding which can be
+  # installed using pip. This can be removed when this commit is released:
+  #
+  #     https://github.com/graphite-project/graphite-web/commit/d1306e705152c583ca501ac1d4a0fc0d70f6fadd
+  #
+  exec { 'graphite/patch graphite-web':
+    command => '/usr/bin/patch -tN /opt/graphite/webapp/graphite/render/glyph.py <<EOM
+@@ -12,7 +12,12 @@
+ See the License for the specific language governing permissions and
+ limitations under the License."""
+
+-import os, cairo, math, itertools, re
++import os, math, itertools, re
++try:
++    import cairo
++except ImportError:
++    import cairocffi as cairo
++
+ import StringIO
+ from datetime import datetime, timedelta
+ from urllib import unquote_plus
+EOM',
+    unless  => 'fgrep -q cairocffi /opt/graphite/webapp/graphite/render/glyph.py',
+    require => Exec['graphite/install graphite-web'],
+  }
+
+
   exec { 'graphite/install gunicorn':
     command => '/opt/graphite/bin/pip install gunicorn',
     creates => '/opt/graphite/bin/gunicorn',
