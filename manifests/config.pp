@@ -4,7 +4,11 @@ class graphite::config {
   $port = $graphite::port
   $storage_root = $graphite::storage_root
 
-  file { '/etc/init.d/carbon':
+  file {
+  [
+    '/etc/init.d/carbon',
+    '/etc/init.d/graphite-web'
+  ]:
     ensure => link,
     target => '/lib/init/upstart-job',
   }
@@ -13,6 +17,12 @@ class graphite::config {
     ensure => present,
     source => 'puppet:///modules/graphite/carbon.conf',
     mode   => '0555',
+  }
+
+  file { '/etc/init/graphite-web.conf':
+    ensure  => present,
+    content => template('graphite/graphite-web.conf'),
+    mode    => '0555',
   }
 
   file { '/opt/graphite/conf/carbon.conf':
@@ -49,7 +59,7 @@ class graphite::config {
   }
 
   exec { 'init-db':
-    command   => 'python manage.py syncdb --noinput',
+    command   => '/opt/graphite/bin/python manage.py syncdb --noinput',
     cwd       => '/opt/graphite/webapp/graphite',
     creates   => '/opt/graphite/storage/graphite.db',
     subscribe => File['/opt/graphite/storage'],
@@ -72,22 +82,13 @@ class graphite::config {
     ensure    => 'directory',
     owner     => 'www-data',
     mode      => '0775',
-    subscribe => Package['graphite-web'],
+    subscribe => Exec['graphite/install graphite-web'],
   }
 
   file { '/opt/graphite/webapp/graphite/local_settings.py':
     ensure  => present,
     source  => 'puppet:///modules/graphite/local_settings.py',
     require => File['/opt/graphite/storage']
-  }
-
-  apache::mod { 'headers': }
-  apache::vhost { 'graphite':
-    priority => '10',
-    port     => $port,
-    template => 'graphite/virtualhost.conf',
-    docroot  => '/opt/graphite/webapp',
-    logroot  => '/opt/graphite/storage/log/webapp/',
   }
 
 }
