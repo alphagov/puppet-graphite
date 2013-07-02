@@ -5,6 +5,8 @@ class graphite::install {
   ensure_packages([
     'python-virtualenv',
     'python-pip',
+    # installing parts of zope and cairocffi require a compiler:
+    'build-essential',
   ])
 
   file { $root_dir:
