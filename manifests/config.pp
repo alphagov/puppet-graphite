@@ -4,7 +4,11 @@ class graphite::config {
   $port = $::graphite::port
   $root_dir = $::graphite::root_dir
 
-  file { '/etc/init.d/carbon':
+  file {
+  [
+    '/etc/init.d/carbon',
+    '/etc/init.d/graphite-web'
+  ]:
     ensure => link,
     target => '/lib/init/upstart-job',
   }
@@ -12,6 +16,12 @@ class graphite::config {
   file { '/etc/init/carbon.conf':
     ensure  => present,
     content => template('graphite/upstart/carbon.conf'),
+    mode    => '0555',
+  }
+
+  file { '/etc/init/graphite-web.conf':
+    ensure  => present,
+    content => template('graphite/upstart/graphite-web.conf'),
     mode    => '0555',
   }
 
@@ -61,15 +71,6 @@ class graphite::config {
     ensure  => present,
     source  => 'puppet:///modules/graphite/local_settings.py',
     require => File["${root_dir}/storage"]
-  }
-
-  apache::mod { 'headers': }
-  apache::vhost { 'graphite':
-    priority => '10',
-    port     => $port,
-    template => 'graphite/virtualhost.conf',
-    docroot  => "${root_dir}/webapp",
-    logroot  => "${root_dir}/storage/log/webapp/",
   }
 
 }

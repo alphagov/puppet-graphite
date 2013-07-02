@@ -5,4 +5,10 @@ class graphite::service {
     hasrestart => true,
     provider   => upstart,
   }
+  service { 'graphite-web':
+    ensure     => running,
+    hasstatus  => true,
+    hasrestart => true,
+    provider   => upstart,
+  }
 }

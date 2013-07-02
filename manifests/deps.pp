@@ -7,11 +7,11 @@ class graphite::deps {
     'python-twisted',
     'python-django-tagging',
     'python-simplejson',
-    'libapache2-mod-python',
     'python-memcache',
     'python-pysqlite2',
     'python-support',
     'python-pip',
+    'gunicorn',
   ])
 
 }
