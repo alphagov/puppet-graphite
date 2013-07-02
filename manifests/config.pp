@@ -2,6 +2,7 @@ class graphite::config {
 
   $admin_password = $graphite::admin_password
   $port = $graphite::port
+  $storage_root = $graphite::storage_root
 
   file { '/etc/init.d/carbon':
     ensure => link,
@@ -24,9 +25,27 @@ class graphite::config {
     source    => 'puppet:///modules/graphite/storage-schemas.conf',
   }
 
-  file { ['/opt/graphite/storage', '/opt/graphite/storage/whisper']:
-    owner     => 'www-data',
-    mode      => '0775',
+  if $storage_root == '/opt/graphite/storage' {
+    file { '/opt/graphite/storage':
+      owner => 'www-data',
+      mode  => '0775',
+    }
+  } else {
+    file { '/opt/graphite/storage':
+      ensure => link,
+      target => $storage_root,
+    }
+
+    file { $storage_root:
+      ensure => directory,
+      owner  => 'www-data',
+      mode   => '0775',
+    }
+  }
+
+  file { '/opt/graphite/storage/whisper':
+    owner => 'www-data',
+    mode  => '0775',
   }
 
   exec { 'init-db':
