@@ -11,7 +11,7 @@ describe 'graphite', :type => :class do
   it { should contain_exec('graphite/install whisper')}
   it { should contain_exec('graphite/install graphite-web')}
 
-  it { should contain_service('carbon') }
+  it { should contain_service('carbon-cache') }
   it { should contain_service('graphite-web') }
 
   context 'with admin password' do

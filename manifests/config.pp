@@ -6,16 +6,16 @@ class graphite::config {
 
   file {
   [
-    '/etc/init.d/carbon',
+    '/etc/init.d/carbon-cache',
     '/etc/init.d/graphite-web'
   ]:
     ensure => link,
     target => '/lib/init/upstart-job',
   }
 
-  file { '/etc/init/carbon.conf':
+  file { '/etc/init/carbon-cache.conf':
     ensure  => present,
-    content => template('graphite/upstart/carbon.conf'),
+    content => template('graphite/upstart/carbon-cache.conf'),
     mode    => '0555',
   }
 

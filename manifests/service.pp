@@ -1,5 +1,5 @@
 class graphite::service {
-  service { 'carbon':
+  service { 'carbon-cache':
     ensure     => running,
     hasstatus  => true,
     hasrestart => true,
