@@ -1,74 +1,76 @@
 class graphite::config {
 
-  $admin_password = $graphite::admin_password
-  $port = $graphite::port
+  $admin_password = $::graphite::admin_password
+  $port = $::graphite::port
+  $root_dir = $::graphite::root_dir
 
-  file { '/etc/init.d/carbon':
+  file {
+  [
+    '/etc/init.d/carbon-cache',
+    '/etc/init.d/graphite-web'
+  ]:
     ensure => link,
     target => '/lib/init/upstart-job',
   }
 
-  file { '/etc/init/carbon.conf':
-    ensure => present,
-    source => 'puppet:///modules/graphite/carbon.conf',
-    mode   => '0555',
+  file { '/etc/init/carbon-cache.conf':
+    ensure  => present,
+    content => template('graphite/upstart/carbon-cache.conf'),
+    mode    => '0555',
   }
 
-  file { '/opt/graphite/conf/carbon.conf':
+  file { '/etc/init/graphite-web.conf':
+    ensure  => present,
+    content => template('graphite/upstart/graphite-web.conf'),
+    mode    => '0555',
+  }
+
+  file { "${root_dir}/conf/carbon.conf":
     ensure    => present,
     content   => template('graphite/carbon.conf'),
   }
 
-  file { '/opt/graphite/conf/storage-schemas.conf':
+  file { "${root_dir}/conf/storage-schemas.conf":
     ensure    => present,
     source    => 'puppet:///modules/graphite/storage-schemas.conf',
   }
 
-  file { ['/opt/graphite/storage', '/opt/graphite/storage/whisper']:
-    owner     => 'www-data',
-    mode      => '0775',
+  file { ["${root_dir}/storage", "${root_dir}/storage/whisper"]:
+    owner => 'www-data',
+    mode  => '0775',
   }
 
   exec { 'init-db':
-    command   => 'python manage.py syncdb --noinput',
-    cwd       => '/opt/graphite/webapp/graphite',
-    creates   => '/opt/graphite/storage/graphite.db',
-    subscribe => File['/opt/graphite/storage'],
-    require   => File['/opt/graphite/webapp/graphite/initial_data.json'],
+    command   => "/usr/bin/python manage.py syncdb --noinput",
+    cwd       => "${root_dir}/webapp/graphite",
+    creates   => "${root_dir}/storage/graphite.db",
+    subscribe => File["${root_dir}/storage"],
+    require   => File["${root_dir}/webapp/graphite/initial_data.json"],
   }
 
-  file { '/opt/graphite/webapp/graphite/initial_data.json':
+  file { "${root_dir}/webapp/graphite/initial_data.json":
     ensure  => present,
-    require => File['/opt/graphite/storage'],
+    require => File["${root_dir}/storage"],
     content => template('graphite/initial_data.json'),
   }
 
-  file { '/opt/graphite/storage/graphite.db':
+  file { "${root_dir}/storage/graphite.db":
     owner     => 'www-data',
     mode      => '0664',
     subscribe => Exec['init-db'],
   }
 
-  file { '/opt/graphite/storage/log/webapp/':
+  file { "${root_dir}/storage/log/webapp/":
     ensure    => 'directory',
     owner     => 'www-data',
     mode      => '0775',
-    subscribe => Package['graphite-web'],
+    subscribe => Exec['graphite/install graphite-web'],
   }
 
-  file { '/opt/graphite/webapp/graphite/local_settings.py':
+  file { "${root_dir}/webapp/graphite/local_settings.py":
     ensure  => present,
     source  => 'puppet:///modules/graphite/local_settings.py',
-    require => File['/opt/graphite/storage']
-  }
-
-  apache::mod { 'headers': }
-  apache::vhost { 'graphite':
-    priority => '10',
-    port     => $port,
-    template => 'graphite/virtualhost.conf',
-    docroot  => '/opt/graphite/webapp',
-    logroot  => '/opt/graphite/storage/log/webapp/',
+    require => File["${root_dir}/storage"]
   }
 
 }
