@@ -7,8 +7,8 @@ describe 'graphite', :type => :class do
   it { should create_class('graphite::service')}
 
   it { should contain_package('whisper')}
-  it { should contain_exec('install-graphite-web')}
-  it { should contain_exec('install-carbon')}
+  it { should contain_exec('graphite/install carbon')}
+  it { should contain_exec('graphite/install graphite-web')}
 
   it { should contain_service('carbon') }
   it { should contain_service('httpd') }
@@ -23,6 +23,11 @@ describe 'graphite', :type => :class do
   context 'with admin password' do
     let(:params) { {'admin_password' => 'should be a hash' }}
     it { should contain_file('/opt/graphite/webapp/graphite/initial_data.json').with_content(/should be a hash/) }
+  end
+
+  context 'with different root dir' do
+    let(:params) { {'root_dir' => '/var/lib/graphite' }}
+    it { should contain_file('/var/lib/graphite/webapp/graphite/initial_data.json') }
   end
 
 end
