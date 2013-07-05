@@ -24,4 +24,19 @@ describe 'graphite', :type => :class do
     it { should contain_file('/var/lib/graphite/webapp/graphite/initial_data.json') }
   end
 
+  context 'with unconfigured storage schemas' do
+    it {
+      should contain_file('/opt/graphite/conf/storage-schemas.conf').
+        with_source(/storage-schemas\.conf/)
+    }
+  end
+
+  context 'with configured storage schemas' do
+    let(:params) { {'storage_schemas_content' => "Giraffes and elephants!" } }
+    it {
+      should contain_file('/opt/graphite/conf/storage-schemas.conf').
+        with_content("Giraffes and elephants!")
+    }
+  end
+
 end

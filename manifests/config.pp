@@ -4,6 +4,15 @@ class graphite::config {
   $port = $::graphite::port
   $root_dir = $::graphite::root_dir
 
+  if ($::graphite::storage_schemas_source == undef and
+      $::graphite::storage_schemas_content == undef) {
+    $storage_schemas_source = 'puppet:///modules/graphite/storage-schemas.conf'
+    $storage_schemas_content = undef
+  } else {
+    $storage_schemas_source = $::graphite::storage_schemas_source
+    $storage_schemas_content = $::graphite::storage_schemas_content
+  }
+
   file {
   [
     '/etc/init.d/carbon-cache',
@@ -32,7 +41,8 @@ class graphite::config {
 
   file { "${root_dir}/conf/storage-schemas.conf":
     ensure    => present,
-    source    => 'puppet:///modules/graphite/storage-schemas.conf',
+    content   => $storage_schemas_content,
+    source    => $storage_schemas_source,
   }
 
   file { ["${root_dir}/storage", "${root_dir}/storage/whisper"]:
