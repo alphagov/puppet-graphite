@@ -4,6 +4,15 @@ class graphite::config {
   $port = $::graphite::port
   $root_dir = $::graphite::root_dir
 
+  if ($::graphite::storage_aggregation_source == undef and
+      $::graphite::storage_aggregation_content == undef) {
+    $storage_aggregation_source = 'puppet:///modules/graphite/storage-aggregation.conf'
+    $storage_aggregation_content = undef
+  } else {
+    $storage_aggregation_source = $::graphite::storage_aggregation_source
+    $storage_aggregation_content = $::graphite::storage_aggregation_content
+  }
+
   if ($::graphite::storage_schemas_source == undef and
       $::graphite::storage_schemas_content == undef) {
     $storage_schemas_source = 'puppet:///modules/graphite/storage-schemas.conf'
@@ -37,6 +46,12 @@ class graphite::config {
   file { "${root_dir}/conf/carbon.conf":
     ensure    => present,
     content   => template('graphite/carbon.conf'),
+  }
+
+  file { "${root_dir}/conf/storage-aggregation.conf":
+    ensure    => present,
+    content   => $storage_aggregation_content,
+    source    => $storage_aggregation_source,
   }
 
   file { "${root_dir}/conf/storage-schemas.conf":

@@ -39,4 +39,19 @@ describe 'graphite', :type => :class do
     }
   end
 
+  context 'with unconfigured storage aggregation' do
+    it {
+      should contain_file('/opt/graphite/conf/storage-aggregation.conf').
+        with_source(/storage-aggregation\.conf/)
+    }
+  end
+
+  context 'with configured storage aggregation' do
+    let(:params) { {'storage_aggregation_content' => "Elephants and giraffes!" } }
+    it {
+      should contain_file('/opt/graphite/conf/storage-aggregation.conf').
+        with_content("Elephants and giraffes!")
+    }
+  end
+
 end

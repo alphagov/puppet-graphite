@@ -13,6 +13,12 @@
 # [*root_dir*]
 #   Where to install Graphite.
 #
+# [*storage_aggregation_content*]
+#   Optional: the content of the storage-aggregation.conf file.
+#
+# [*storage_aggregation_source*]
+#   Optional: the source of the storage-aggregation.conf file.
+
 # [*storage_schemas_content*]
 #   Optional: the content of the storage-schemas.conf file.
 #
@@ -23,6 +29,8 @@ class graphite(
   $admin_password = $graphite::params::admin_password,
   $port = $graphite::params::port,
   $root_dir = $graphite::params::root_dir,
+  $storage_aggregation_content = undef,
+  $storage_aggregation_source = undef,
   $storage_schemas_content = undef,
   $storage_schemas_source = undef
 ) inherits graphite::params {
