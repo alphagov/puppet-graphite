@@ -4,6 +4,24 @@ class graphite::config {
   $port = $::graphite::port
   $root_dir = $::graphite::root_dir
 
+  if ($::graphite::storage_aggregation_source == undef and
+      $::graphite::storage_aggregation_content == undef) {
+    $storage_aggregation_source = 'puppet:///modules/graphite/storage-aggregation.conf'
+    $storage_aggregation_content = undef
+  } else {
+    $storage_aggregation_source = $::graphite::storage_aggregation_source
+    $storage_aggregation_content = $::graphite::storage_aggregation_content
+  }
+
+  if ($::graphite::storage_schemas_source == undef and
+      $::graphite::storage_schemas_content == undef) {
+    $storage_schemas_source = 'puppet:///modules/graphite/storage-schemas.conf'
+    $storage_schemas_content = undef
+  } else {
+    $storage_schemas_source = $::graphite::storage_schemas_source
+    $storage_schemas_content = $::graphite::storage_schemas_content
+  }
+
   file {
   [
     '/etc/init.d/carbon-cache',
@@ -30,9 +48,16 @@ class graphite::config {
     content   => template('graphite/carbon.conf'),
   }
 
+  file { "${root_dir}/conf/storage-aggregation.conf":
+    ensure    => present,
+    content   => $storage_aggregation_content,
+    source    => $storage_aggregation_source,
+  }
+
   file { "${root_dir}/conf/storage-schemas.conf":
     ensure    => present,
-    source    => 'puppet:///modules/graphite/storage-schemas.conf',
+    content   => $storage_schemas_content,
+    source    => $storage_schemas_source,
   }
 
   file { ["${root_dir}/storage", "${root_dir}/storage/whisper"]:
