@@ -2,7 +2,7 @@ A Puppet module for managing the installation of
 [Graphite](http://graphite.wikidot.com/).
 
 [![Build
-Status](https://secure.travis-ci.org/garethr/garethr-graphite.png)](http://travis-ci.org/garethr/garethr-graphite)
+Status](https://secure.travis-ci.org/gds-operations/puppet-graphite.png)](http://travis-ci.org/gds-operations/puppet-graphite)
 
 # Usage
 
