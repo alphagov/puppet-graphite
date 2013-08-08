@@ -1,6 +1,7 @@
 # == Class: graphite
 #
-# Install and configure the Graphite metric aggregation and graphing system.
+# Class to install and configure the Graphite metric aggregation and
+# graphing system.
 #
 # === Parameters
 #
