@@ -1,6 +1,6 @@
 # == Class: graphite::config
 #
-# Class to setups up all graphite related configuration files and dependencies
+# Class to set up all graphite related configuration files and dependencies
 #
 class graphite::config {
 
