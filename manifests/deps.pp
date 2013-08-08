@@ -1,3 +1,7 @@
+# == Class: graphite::deps
+#
+# Installs all graphite dependency packages
+#
 class graphite::deps {
 
   ensure_packages([

@@ -1,5 +1,8 @@
+# == Class: graphite::install
+#
+# Install graphite as a package
+#
 class graphite::install {
-
   $root_dir = $::graphite::root_dir
 
   package { 'whisper':
