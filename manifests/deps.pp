@@ -1,6 +1,6 @@
 # == Class: graphite::deps
 #
-# Installs all graphite dependency packages
+# Class to install all graphite dependency packages
 #
 class graphite::deps {
 

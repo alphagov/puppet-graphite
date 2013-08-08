@@ -1,6 +1,6 @@
 # == Class: graphite::service
 #
-# starts carbon-cache and graphite-web processes
+# Class to start carbon-cache and graphite-web processes
 #
 class graphite::service {
   service { 'carbon-cache':

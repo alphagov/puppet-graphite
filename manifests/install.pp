@@ -1,6 +1,6 @@
 # == Class: graphite::install
 #
-# Install graphite as a package
+# Class to install graphite as a package
 #
 class graphite::install {
   $root_dir = $::graphite::root_dir
