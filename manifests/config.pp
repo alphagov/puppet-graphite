@@ -1,3 +1,7 @@
+# == Class: graphite::config
+#
+# Class to set up all graphite related configuration files and dependencies
+#
 class graphite::config {
 
   $admin_password = $::graphite::admin_password
@@ -66,7 +70,7 @@ class graphite::config {
   }
 
   exec { 'init-db':
-    command   => "/usr/bin/python manage.py syncdb --noinput",
+    command   => '/usr/bin/python manage.py syncdb --noinput',
     cwd       => "${root_dir}/webapp/graphite",
     creates   => "${root_dir}/storage/graphite.db",
     subscribe => File["${root_dir}/storage"],
