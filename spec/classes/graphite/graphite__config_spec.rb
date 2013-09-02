@@ -31,9 +31,18 @@ describe 'graphite', :type => :class do
   end
 
   describe "carbon.conf" do
-    let(:params) {{ :root_dir => '/this/is/root' }}
-    it { should contain_file('/this/is/root/conf/carbon.conf').
-         with_content(/LOCAL_DATA_DIR = \/this\/is\/root\/storage\/whisper\//) }
+    context 'with unconfigured carbon contents' do
+      let(:params) {{ :root_dir => '/this/is/root' }}
+      it { should contain_file('/this/is/root/conf/carbon.conf').
+           with_content(/LOCAL_DATA_DIR = \/this\/is\/root\/storage\/whisper\//) }
+      end
+
+    context 'with configured carbon contents' do
+      let(:params) {{ :root_dir => '/this/is/root', :carbon_content => 'SOMEVAR=SOMECONTENT' }}
+      it { should contain_file('/this/is/root/conf/carbon.conf').with_ensure('present').
+           with_content(/SOMECONTENT/) }
+    end
+
   end
 
   describe "storage-aggregation.conf" do
