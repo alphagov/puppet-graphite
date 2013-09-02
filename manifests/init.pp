@@ -26,6 +26,13 @@
 # [*storage_schemas_source*]
 #   Optional: the source of the storage-schemas.conf file.
 #
+# [*carbon_conf_content*]
+#   Optional: the content of the carbon.conf file.
+#
+# [*carbon_conf_source*]
+#   Optional: the source of the carbon.conf file.
+
+
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $port = $graphite::params::port,
@@ -33,7 +40,9 @@ class graphite(
   $storage_aggregation_content = undef,
   $storage_aggregation_source = undef,
   $storage_schemas_content = undef,
-  $storage_schemas_source = undef
+  $storage_schemas_source = undef,
+  $carbon_source = undef,
+  $carbon_content = undef
 ) inherits graphite::params {
   class{'graphite::deps': } ->
   class{'graphite::install': } ->
