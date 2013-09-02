@@ -1,2 +1,5 @@
+2013-09-02 Release 0.2.0
+- Add the ability to pass through the source or content of the carbon.conf config file. 
+
 2013-08-08 Release 0.1.0
 - Initial commit introduction a puppet module for graphite
