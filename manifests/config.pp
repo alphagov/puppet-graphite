@@ -26,6 +26,15 @@ class graphite::config {
     $storage_schemas_content = $::graphite::storage_schemas_content
   }
 
+  if ($::graphite::carbon_source == undef and
+      $::graphite::carbon_content == undef) {
+    $carbon_source = 'puppet:///modules/graphite/carbon.conf'
+    $carbon_content = undef
+  } else {
+    $carbon_source = $::graphite::carbon_source
+    $carbon_content = $::graphite::carbon_content
+  }
+
   file {
   [
     '/etc/init.d/carbon-cache',
@@ -49,7 +58,8 @@ class graphite::config {
 
   file { "${root_dir}/conf/carbon.conf":
     ensure    => present,
-    content   => template('graphite/carbon.conf'),
+    content   => $carbon_content,
+    source    => $carbon_source,
   }
 
   file { "${root_dir}/conf/storage-aggregation.conf":
