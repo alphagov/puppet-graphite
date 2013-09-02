@@ -28,8 +28,8 @@ class graphite::config {
 
   if ($::graphite::carbon_source == undef and
       $::graphite::carbon_content == undef) {
+    $carbon_content = template('graphite/carbon.conf')
     $carbon_source = undef
-    $carbon_content = 'puppet:///modules/graphite/carbon.conf'
   } else {
     $carbon_source = $::graphite::carbon_source
     $carbon_content = $::graphite::carbon_content
