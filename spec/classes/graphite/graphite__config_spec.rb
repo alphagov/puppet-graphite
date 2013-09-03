@@ -22,7 +22,7 @@ describe 'graphite', :type => :class do
     end
 
     context 'with configured carbon cache (upstart) contents' do
-      let(:params) {{ :root_dir => '/this/is/root', :carbon_cache_content => 'SOMEVAR=SOMECONTENT' }}
+      let(:params) {{ :root_dir => '/this/is/root', :carbon_upstart_content => 'SOMEVAR=SOMECONTENT' }}
       it { should contain_file('/etc/init/carbon-cache.conf').with_ensure('present').
            with_content(/SOMECONTENT/).
            with_mode('0555') }
