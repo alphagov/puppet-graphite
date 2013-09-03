@@ -37,11 +37,11 @@ class graphite::config {
 
   if ($::graphite::carbon_upstart_source == undef and
       $::graphite::carbon_upstart_content == undef) {
-    $carbon_content = template('graphite/upstart/carbon-cache.conf')
-    $carbon_source = undef
+    $carbon_upstart_content = template('graphite/upstart/carbon-cache.conf')
+    $carbon_upstart_source = undef
   } else {
-    $carbon_source = $::graphite::carbon_upstart_source
-    $carbon_content = $::graphite::carbon_upstart_content
+    $carbon_upstart_source = $::graphite::carbon_upstart_source
+    $carbon_upstart_content = $::graphite::carbon_upstart_content
   }
 
   file {
