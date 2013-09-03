@@ -35,6 +35,15 @@ class graphite::config {
     $carbon_content = $::graphite::carbon_content
   }
 
+  if ($::graphite::carbon_upstart_source == undef and
+      $::graphite::carbon_upstart_content == undef) {
+    $carbon_content = template('graphite/upstart/carbon-cache.conf')
+    $carbon_source = undef
+  } else {
+    $carbon_source = $::graphite::carbon_upstart_source
+    $carbon_content = $::graphite::carbon_upstart_content
+  }
+
   file {
   [
     '/etc/init.d/carbon-cache',
@@ -46,7 +55,8 @@ class graphite::config {
 
   file { '/etc/init/carbon-cache.conf':
     ensure  => present,
-    content => template('graphite/upstart/carbon-cache.conf'),
+    content => $carbon_upstart_content,
+    source  => $carbon_upstart_source,
     mode    => '0555',
   }
 

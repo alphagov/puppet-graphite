@@ -11,14 +11,24 @@ describe 'graphite', :type => :class do
        with_owner('www-data').with_mode('0775') }
 
   describe "carbon-cache.conf" do
-    let(:params) {{ :root_dir => '/this/is/root' }}
-    it { should contain_file('/etc/init/carbon-cache.conf').with_ensure('present').
-         with_content(/chdir '\/this\/is\/root'/).
-         with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
-         with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
-         with_content(/python '\/this\/is\/root\/bin\/carbon-cache.py'/).
-         with_mode('0555') }
+    context 'with unconfigured carbon cache (upstart) contents' do
+      let(:params) {{ :root_dir => '/this/is/root' }}
+      it { should contain_file('/etc/init/carbon-cache.conf').with_ensure('present').
+           with_content(/chdir '\/this\/is\/root'/).
+           with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
+           with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
+           with_content(/python '\/this\/is\/root\/bin\/carbon-cache.py'/).
+           with_mode('0555') }
+    end
+
+    context 'with configured carbon cache (upstart) contents' do
+      let(:params) {{ :root_dir => '/this/is/root', :carbon_cache_content => 'SOMEVAR=SOMECONTENT' }}
+      it { should contain_file('/etc/init/carbon-cache.conf').with_ensure('present').
+           with_content(/SOMECONTENT/).
+           with_mode('0555') }
+    end
   end
+
 
   describe "graphite-web.conf" do
     let(:params) {{ :root_dir => '/this/is/root' }}
@@ -42,7 +52,6 @@ describe 'graphite', :type => :class do
       it { should contain_file('/this/is/root/conf/carbon.conf').with_ensure('present').
            with_content(/SOMECONTENT/) }
     end
-
   end
 
   describe "storage-aggregation.conf" do
