@@ -1,0 +1,53 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: graphite + gunicorn init script
+# Description:       graphite + gunicorn init script
+### END INIT INFO
+
+APP_ROOT=<%= @root_dir -%>/webapp/graphite
+NAME=gunicorn-graphite
+DESC="Gunicorn Workers"
+PID=<%= @root_dir -%>/storage/graphite-webapp.pid
+APP=graphite-web
+USER=<%= @gr_user%>
+GROUP=<%= @gr_group%>
+BIND=<%= @ipaddress %>:<%= @port %>
+ACCESS_LOG=<%= @root_dir -%>/storage/log/webapp/access.log
+ERROR_LOG=<%= @root_dir -%>/storage/log/webapp/error.log
+WORKERS=1
+
+# Name of executable daemon
+NAME=gunicorn-graphite
+DESC=gunicorn-graphite
+
+# Path to Executable
+DAEMON=/usr/bin/gunicorn_django
+
+DAEMON_OPTS="--user=$USER --group=$GROUP --bind=$BIND --access-logfile=$ACCESS_LOG --error-logfile=$ERROR_LOG --pid=$PID --workers=$WORKERS --name=$APP --preload --daemon"
+
+case "$1" in
+  start)
+        CD_TO_APP_DIR="cd $APP_ROOT"
+
+        echo -n "Starting $DESC: "
+        $CD_TO_APP_DIR && $DAEMON $DAEMON_OPTS
+        echo "$NAME."
+        ;;
+  stop)
+        echo -n "Stopping $DESC: "
+        kill -QUIT `cat $PID`
+        echo "$NAME."
+        ;;
+  status)
+        status -p $PID `basename $DAEMON`
+        ;;
+  *)
+        echo "Usage: $NAME {start|stop|status}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

@@ -4,7 +4,7 @@
 #DEBUG = True
 
 # Set your local timezone (django will try to figure this out automatically)
-TIME_ZONE = 'UTC'
+#TIME_ZONE = 'America/New_York'
 
 # Setting MEMCACHE_HOSTS to be empty will turn off use of memcached entirely
 #MEMCACHE_HOSTS = ['127.0.0.1:11211']
@@ -40,3 +40,4 @@ TIME_ZONE = 'UTC'
 #DATABASE_PASSWORD = 'graphite-is-awesome'
 #DATABASE_HOST = 'mysql.mycompany.com'
 #DATABASE_PORT = '3306'
+SECRET_KEY='<%= @django_secret_key %>'

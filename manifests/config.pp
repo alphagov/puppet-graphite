@@ -7,6 +7,7 @@ class graphite::config {
   $admin_password = $::graphite::admin_password
   $port = $::graphite::port
   $root_dir = $::graphite::root_dir
+  $gr_user = $::graphite::gr_user
 
   if ($::graphite::storage_aggregation_source == undef and
       $::graphite::storage_aggregation_content == undef) {
@@ -35,27 +36,50 @@ class graphite::config {
     $carbon_content = $::graphite::carbon_content
   }
 
-  file {
-  [
-    '/etc/init.d/carbon-cache',
-    '/etc/init.d/graphite-web'
-  ]:
-    ensure => link,
-    target => '/lib/init/upstart-job',
-  }
+  # service scripts
+  case $osfamily {
+    'RedHat': {
+    
+      file { '/etc/init.d/carbon-cache':
+        ensure  => present,
+        content => template('graphite/rhel/carbon-cache.initd'),
+        mode    => '0555',
+      }
+      
+      file { '/etc/init.d/graphite-web':
+        ensure  => present,
+        content => template('graphite/rhel/graphite-web.initd'),
+        mode    => '0555',
+      }    
+    
+    }
+    # Ubuntu/other
+    default: {
 
-  file { '/etc/init/carbon-cache.conf':
-    ensure  => present,
-    content => template('graphite/upstart/carbon-cache.conf'),
-    mode    => '0555',
+      file {
+      [
+        '/etc/init.d/carbon-cache',
+        '/etc/init.d/graphite-web'
+      ]:
+        ensure => link,
+        target => '/lib/init/upstart-job',
+      }
+      
+      file { '/etc/init/carbon-cache.conf':
+        ensure  => present,
+        content => template('graphite/upstart/carbon-cache.conf'),
+        mode    => '0555',
+      }
+      
+      file { '/etc/init/graphite-web.conf':
+        ensure  => present,
+        content => template('graphite/upstart/graphite-web.conf'),
+        mode    => '0555',
+      }
+    
+    }
   }
-
-  file { '/etc/init/graphite-web.conf':
-    ensure  => present,
-    content => template('graphite/upstart/graphite-web.conf'),
-    mode    => '0555',
-  }
-
+  
   file { "${root_dir}/conf/carbon.conf":
     ensure    => present,
     content   => $carbon_content,
@@ -75,7 +99,7 @@ class graphite::config {
   }
 
   file { ["${root_dir}/storage", "${root_dir}/storage/whisper"]:
-    owner => 'www-data',
+    owner => $gr_user,
     mode  => '0775',
   }
 
@@ -94,21 +118,21 @@ class graphite::config {
   }
 
   file { "${root_dir}/storage/graphite.db":
-    owner     => 'www-data',
+    owner     => $gr_user,
     mode      => '0664',
     subscribe => Exec['init-db'],
   }
 
   file { "${root_dir}/storage/log/webapp/":
     ensure    => 'directory',
-    owner     => 'www-data',
+    owner     => $gr_user,
     mode      => '0775',
     subscribe => Exec['graphite/install graphite-web'],
   }
 
   file { "${root_dir}/webapp/graphite/local_settings.py":
     ensure  => present,
-    source  => 'puppet:///modules/graphite/local_settings.py',
+    content => template('graphite/local_settings.py'),
     require => File["${root_dir}/storage"]
   }
 
