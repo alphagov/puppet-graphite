@@ -7,6 +7,8 @@
 # Description:       graphite + gunicorn init script
 ### END INIT INFO
 
+. /etc/init.d/functions
+
 APP_ROOT=<%= @root_dir -%>/webapp/graphite
 NAME=gunicorn-graphite
 DESC="Gunicorn Workers"
@@ -41,11 +43,15 @@ case "$1" in
         kill -QUIT `cat $PID`
         echo "$NAME."
         ;;
+  restart)
+        stop
+        start
+        ;;        
   status)
         status -p $PID `basename $DAEMON`
         ;;
   *)
-        echo "Usage: $NAME {start|stop|status}" >&2
+        echo "Usage: $NAME {start|stop|restart|status}" >&2
         exit 1
         ;;
 esac

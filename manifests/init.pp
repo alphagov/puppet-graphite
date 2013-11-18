@@ -53,7 +53,7 @@ class graphite(
   $storage_schemas_content = undef,
   $storage_schemas_source = undef,
   $carbon_source = undef,
-  $carbon_content = undef
+  $carbon_content = undef,
   $django_secret_key = undef
 ) inherits graphite::params {
   class{'graphite::deps': } ->
