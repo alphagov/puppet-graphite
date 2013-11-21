@@ -37,25 +37,21 @@ class graphite::config {
   }
 
   # service scripts
-  case $osfamily {
+  case $::osfamily {
     'RedHat': {
-    
       file { '/etc/init.d/carbon-cache':
         ensure  => present,
         content => template('graphite/rhel/carbon-cache.initd'),
         mode    => '0555',
       }
-      
       file { '/etc/init.d/graphite-web':
         ensure  => present,
         content => template('graphite/rhel/graphite-web.initd'),
         mode    => '0555',
-      }    
-    
+      }
     }
     # Ubuntu/other
     default: {
-
       file {
       [
         '/etc/init.d/carbon-cache',
@@ -64,22 +60,19 @@ class graphite::config {
         ensure => link,
         target => '/lib/init/upstart-job',
       }
-      
       file { '/etc/init/carbon-cache.conf':
         ensure  => present,
         content => template('graphite/upstart/carbon-cache.conf'),
         mode    => '0555',
       }
-      
       file { '/etc/init/graphite-web.conf':
         ensure  => present,
         content => template('graphite/upstart/graphite-web.conf'),
         mode    => '0555',
       }
-    
     }
   }
-  
+
   file { "${root_dir}/conf/carbon.conf":
     ensure    => present,
     content   => $carbon_content,

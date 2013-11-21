@@ -14,22 +14,18 @@ class graphite::deps {
   ])
 
   # OS-specific packages
-  case $osfamily {
-  
+  case $::osfamily {
     'RedHat': {
-       ensure_packages([
-         'python-memcached',
-         'python-gunicorn',
-         'Django14',
-         'python-sqlite2',
-         'pycairo',
-       ])
-  
+      ensure_packages([
+        'python-memcached',
+        'python-gunicorn',
+        'Django14',
+        'python-sqlite2',
+        'pycairo',
+      ])
     }
-    
     # Ubuntu/other
-    default: {  
-  
+    default: {
       ensure_packages([
         'python-memcache',
         'gunicorn',
@@ -38,7 +34,6 @@ class graphite::deps {
         'python-cairo',
         'python-support',
       ])
-  
     }
   }
 

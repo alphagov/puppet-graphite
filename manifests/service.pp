@@ -3,7 +3,7 @@
 # Class to start carbon-cache and graphite-web processes
 #
 class graphite::service {
-  if $osfamily == 'RedHat' {
+  if $::osfamily == 'RedHat' {
     $provider = redhat
   } else {
     $provider = upstart

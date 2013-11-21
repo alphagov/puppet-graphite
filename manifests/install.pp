@@ -6,7 +6,7 @@ class graphite::install {
   $root_dir = $::graphite::root_dir
   $gr_user = $::graphite::gr_user
   $gr_group = $::graphite::gr_group
-  
+
   package { 'whisper':
     ensure   => installed,
     provider => pip,
