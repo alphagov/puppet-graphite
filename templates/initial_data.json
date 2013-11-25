@@ -12,7 +12,7 @@
       "last_login": "2011-09-20 17:02:14", 
       "groups": [], 
       "user_permissions": [], 
-      "password": "<%= admin_password %>", 
+      "password": "<%= @admin_password %>",
       "email": "root@example.com", 
       "date_joined": "2011-09-20 17:02:14"
     }
