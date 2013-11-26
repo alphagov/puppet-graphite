@@ -1,3 +1,7 @@
+0.2.1 2013-11-26
+ - Fix deprecation warnings by using @-prefixed variables in templates
+ - Fix Modulefile format to enable forge to properly understand dependencies
+
 0.2.0 2013-09-02
  - Add the ability to pass through the source or content of the carbon.conf config file.
 
