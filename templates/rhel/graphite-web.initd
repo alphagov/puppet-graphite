@@ -10,16 +10,14 @@
 . /etc/init.d/functions
 
 APP_ROOT=<%= @root_dir -%>/webapp/graphite
-NAME=gunicorn-graphite
-DESC="Gunicorn Workers"
-PID=<%= @root_dir -%>/storage/graphite-webapp.pid
+GRAPHITE_STORAGE_DIR=${APP_ROOT}/storage
+GRAPHITE_CONF_DIR=${APP_ROOT}/conf
+PID=${GRAPHITE_STORAGE_DIR}/graphite-webapp.pid
 APP=graphite-web
 USER=<%= @gr_user%>
 GROUP=<%= @gr_group%>
-BIND=<%= @ipaddress %>:<%= @port %>
-ACCESS_LOG=<%= @root_dir -%>/storage/log/webapp/access.log
-ERROR_LOG=<%= @root_dir -%>/storage/log/webapp/error.log
-WORKERS=1
+BIND=127.0.0.1:<%= @port %>
+WORKERS=2
 
 # Name of executable daemon
 NAME=gunicorn-graphite
@@ -28,7 +26,7 @@ DESC=gunicorn-graphite
 # Path to Executable
 DAEMON=/usr/bin/gunicorn_django
 
-DAEMON_OPTS="--user=$USER --group=$GROUP --bind=$BIND --access-logfile=$ACCESS_LOG --error-logfile=$ERROR_LOG --pid=$PID --workers=$WORKERS --name=$APP --preload --daemon"
+DAEMON_OPTS="--user=$USER --group=$GROUP --bind=$BIND --pid=$PID --workers=$WORKERS --name=$APP --preload --daemon"
 
 case "$1" in
   start)

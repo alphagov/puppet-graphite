@@ -40,8 +40,34 @@
 #
 # [*django_secret_key*]
 #   Optional: SECRET_KEY setting in local_settings.py for graphite.
-
-
+#
+# [*django_timezone*]
+#   Optional: TIME_ZONE setting in local_settings.py for graphite.
+#
+# [*smtp_server*]
+#   Optional: SMTP_SERVER setting in local_settings.py for graphite.
+#
+# [*use_ldap_auth*]
+#   Optional: Enable LDAP authentication for graphite.
+#
+# [*ldap_server*]
+#   Optional: LDAP server for graphite LDAP authentication.
+#
+# [*ldap_port*]
+#   Optional: LDAP server port.
+#
+# [*ldap_search_base*]
+#   Optional: LDAP search base.
+#
+# [*ldap_base_user*]
+#   Optional: LDAP base user.
+#
+# [*ldap_base_pass*]
+#   Optional: LDAP base password.
+#
+# [*ldap_user_query*]
+#   Optional: LDAP user query.
+#   For Active Directory use "(sAMAccountName=%s)"
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $port = $graphite::params::port,
@@ -54,7 +80,16 @@ class graphite(
   $storage_schemas_source = undef,
   $carbon_source = undef,
   $carbon_content = undef,
-  $django_secret_key = undef
+  $django_secret_key = undef,
+  $django_timezone = 'UTC',
+  $smtp_server = undef,
+  $use_ldap_auth = 'False',
+  $ldap_server = 'ldap.mycompany.com',
+  $ldap_port = 389,
+  $ldap_search_base = 'OU=users,DC=mycompany,DC=com',
+  $ldap_base_user = 'CN=some_readonly_account,DC=mycompany,DC=com',
+  $ldap_base_pass = 'readonly_account_password',
+  $ldap_user_query = '(username=%s)',
 ) inherits graphite::params {
   class{'graphite::deps': } ->
   class{'graphite::install': } ->

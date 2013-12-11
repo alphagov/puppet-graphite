@@ -4,7 +4,7 @@
 #DEBUG = True
 
 # Set your local timezone (django will try to figure this out automatically)
-#TIME_ZONE = 'America/New_York'
+TIME_ZONE = '<%= @django_timezone -%>'
 
 # Setting MEMCACHE_HOSTS to be empty will turn off use of memcached entirely
 #MEMCACHE_HOSTS = ['127.0.0.1:11211']
@@ -22,16 +22,18 @@
 #DOCUMENTATION_URL = "http://wiki.mycompany.com/graphite"
 
 # Enable email-related features
-#SMTP_SERVER = "mail.mycompany.com"
+SMTP_SERVER = "<%= @smtp_server -%>"
 
 # LDAP / ActiveDirectory authentication setup
-#USE_LDAP_AUTH = True
-#LDAP_SERVER = "ldap.mycompany.com"
-#LDAP_PORT = 389
-#LDAP_SEARCH_BASE = "OU=users,DC=mycompany,DC=com"
-#LDAP_BASE_USER = "CN=some_readonly_account,DC=mycompany,DC=com"
-#LDAP_BASE_PASS = "readonly_account_password"
-#LDAP_USER_QUERY = "(username=%s)"  #For Active Directory use "(sAMAccountName=%s)"
+USE_LDAP_AUTH = <%= @use_ldap_auth -%>
+<% if @use_ldap_auth -%>
+LDAP_SERVER = "<%= @ldap_server -%>"
+LDAP_PORT = <%= @ldap_port -%>
+LDAP_SEARCH_BASE = "<%= @ldap_search_base -%>"
+LDAP_BASE_USER = "<%= @ldap_base_user -%>"
+LDAP_BASE_PASS = "<%= @ldap_base_pass -%>"
+LDAP_USER_QUERY = "<%= @ldap_user_query -%>"
+<% end -%>
 
 # If sqlite won't cut it, configure your real database here (don't forget to run manage.py syncdb!)
 #DATABASE_ENGINE = 'mysql' # or 'postgres'
@@ -40,4 +42,4 @@
 #DATABASE_PASSWORD = 'graphite-is-awesome'
 #DATABASE_HOST = 'mysql.mycompany.com'
 #DATABASE_PORT = '3306'
-SECRET_KEY='<%= @django_secret_key %>'
+SECRET_KEY='<%= @django_secret_key -%>'
