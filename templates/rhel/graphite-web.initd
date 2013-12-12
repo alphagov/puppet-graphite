@@ -10,8 +10,8 @@
 . /etc/init.d/functions
 
 APP_ROOT=<%= @root_dir -%>/webapp/graphite
-GRAPHITE_STORAGE_DIR=${APP_ROOT}/storage
-GRAPHITE_CONF_DIR=${APP_ROOT}/conf
+GRAPHITE_STORAGE_DIR=<%= @root_dir -%>/storage
+GRAPHITE_CONF_DIR=<%= @root_dir -%>/conf
 PID=${GRAPHITE_STORAGE_DIR}/graphite-webapp.pid
 APP=graphite-web
 USER=<%= @gr_user%>
