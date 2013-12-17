@@ -1,5 +1,5 @@
 name          'gdsoperations-graphite'
-version       '0.2.3'
+version       '0.2.4'
 author        'Government Digital Service'
 license       'MIT'
 summary       'Module to manage the Graphite monitoring tool'

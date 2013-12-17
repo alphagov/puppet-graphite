@@ -1,3 +1,6 @@
+0.2.4 2013-12-17
+ - Republish of 0.2.3 because Puppetforge won't delete a bad uploaded version
+
 0.2.3 2013-12-17
  - Run carbon-cache with --debug (so it logs to STDOUT again)
 
