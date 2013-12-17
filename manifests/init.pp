@@ -41,8 +41,10 @@ class graphite(
   $storage_aggregation_source = undef,
   $storage_schemas_content = undef,
   $storage_schemas_source = undef,
+  $carbon_content = undef,
   $carbon_source = undef,
-  $carbon_content = undef
+  $carbon_upstart_content = undef,
+  $carbon_upstart_source = undef
 ) inherits graphite::params {
   class{'graphite::deps': } ->
   class{'graphite::install': } ->
