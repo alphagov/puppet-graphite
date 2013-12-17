@@ -25,5 +25,5 @@
 
 Write tests using [rspec-puppet](http://rspec-puppet.com/).
 
-Ensure that you run `rake spec` and `rake lint` so that the tests pass
+Ensure that you run `rake test` so that the tests pass
 before you raise your pull request.
