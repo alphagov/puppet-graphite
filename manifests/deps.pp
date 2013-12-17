@@ -4,18 +4,37 @@
 #
 class graphite::deps {
 
+  # common packages
   ensure_packages([
     'python-ldap',
-    'python-cairo',
-    'python-django',
     'python-twisted',
     'python-django-tagging',
     'python-simplejson',
-    'python-memcache',
-    'python-pysqlite2',
-    'python-support',
     'python-pip',
-    'gunicorn',
   ])
+
+  # OS-specific packages
+  case $::osfamily {
+    'RedHat': {
+      ensure_packages([
+        'python-memcached',
+        'python-gunicorn',
+        'Django14',
+        'python-sqlite2',
+        'pycairo',
+      ])
+    }
+    # Ubuntu/other
+    default: {
+      ensure_packages([
+        'python-memcache',
+        'gunicorn',
+        'python-django',
+        'python-pysqlite2',
+        'python-cairo',
+        'python-support',
+      ])
+    }
+  }
 
 }

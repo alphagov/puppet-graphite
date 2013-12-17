@@ -4,6 +4,8 @@
 #
 class graphite::install {
   $root_dir = $::graphite::root_dir
+  $gr_user = $::graphite::gr_user
+  $gr_group = $::graphite::gr_group
 
   package { 'whisper':
     ensure   => installed,
@@ -34,8 +36,8 @@ class graphite::install {
 
   file { '/var/log/carbon':
     ensure => directory,
-    owner  => www-data,
-    group  => www-data,
+    owner  => $gr_user,
+    group  => $gr_group,
   }
 
 }
