@@ -4,9 +4,10 @@
 #
 class graphite::install {
   $root_dir = $::graphite::root_dir
+  $ver = $::graphite::version
 
   package { 'whisper':
-    ensure   => installed,
+    ensure   => $ver,
     provider => pip,
   }
 
@@ -14,10 +15,10 @@ class graphite::install {
     "--install-option=\"--prefix=${root_dir}\"",
     "--install-option=\"--install-lib=${root_dir}/lib\"",
   ]
-  $carbon_pip_args_str = join($carbon_pip_args, ' ')
+  $carbon_args = join($carbon_pip_args, ' ')
 
   exec { 'graphite/install carbon':
-    command => "/usr/bin/pip install ${carbon_pip_args_str} carbon",
+    command => "/usr/bin/pip install ${carbon_args} carbon==${ver}",
     creates => "${root_dir}/bin/carbon-cache.py",
   }
 
@@ -25,10 +26,10 @@ class graphite::install {
     "--install-option=\"--prefix=${root_dir}\"",
     "--install-option=\"--install-lib=${root_dir}/webapp\""
   ]
-  $graphite_pip_args_str = join($graphite_pip_args, ' ')
+  $graphite_web_args = join($graphite_pip_args, ' ')
 
   exec { 'graphite/install graphite-web':
-    command => "/usr/bin/pip install ${graphite_pip_args_str} graphite-web",
+    command => "/usr/bin/pip install ${graphite_web_args} graphite-web==${ver}",
     creates => "${root_dir}/webapp/graphite/manage.py",
   }
 
