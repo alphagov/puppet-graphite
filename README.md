@@ -15,9 +15,26 @@ Nice and simple, mainly because it's not yet very configurable.
 If you want to run the web interface on a port other than 80 you can
 pass this in like so:
 
-    class { 'graphite':
-      port => 9000,
-    }
+```puppet
+class { 'graphite':
+  port => 9000,
+}
+```
+
+## Versioning
+
+If you want to install a specific version of whisper and carbon, you
+like so:
+
+```puppet
+class { 'graphite':
+  port    => 9000,
+  version => '0.9.12',
+}
+```
+
+However, it's worth saying that this won't deal with upgrades. It'll
+only install the provided version on a clean run.
 
 ## Another Graphite module?
 
