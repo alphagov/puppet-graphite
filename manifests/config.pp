@@ -80,7 +80,7 @@ class graphite::config {
   }
 
   exec { 'init-db':
-    command   => '/usr/bin/python manage.py syncdb --noinput',
+    command   => "${root_dir}/bin/python manage.py syncdb --noinput",
     cwd       => "${root_dir}/webapp/graphite",
     creates   => "${root_dir}/storage/graphite.db",
     subscribe => File["${root_dir}/storage"],
