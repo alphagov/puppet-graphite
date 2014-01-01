@@ -11,7 +11,8 @@ class graphite::install {
     "carbon==${ver}",
     "graphite-web==${ver}"
   ]:
-    virtualenv => $root_dir,
+    virtualenv  => $root_dir,
+    environment => ["PYTHONPATH=${root_dir}/lib:${root_dir}/webapp"],
   }
 
 }
