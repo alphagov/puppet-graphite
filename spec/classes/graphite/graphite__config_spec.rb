@@ -25,7 +25,7 @@ describe 'graphite', :type => :class do
            with_content(/chdir '\/this\/is\/root'/).
            with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
            with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
-           with_content(/python '\/this\/is\/root\/bin\/carbon-aggregator.py'/).
+           with_content(/exec \/this\/is\/root\/bin\/carbon-aggregator.py/).
            with_mode('0555') }
     end
 
