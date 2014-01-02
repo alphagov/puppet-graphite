@@ -6,10 +6,6 @@ describe 'graphite', :type => :class do
   it { should create_class('graphite::install')}
   it { should create_class('graphite::service')}
 
-  it { should contain_package('whisper')}
-  it { should contain_exec('graphite/install carbon')}
-  it { should contain_exec('graphite/install graphite-web')}
-
   it { should contain_service('carbon-cache') }
   it { should contain_service('graphite-web') }
 
