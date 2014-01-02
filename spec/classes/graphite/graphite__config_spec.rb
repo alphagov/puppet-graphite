@@ -34,7 +34,7 @@ describe 'graphite', :type => :class do
            with_content(/chdir '\/this\/is\/root'/).
            with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
            with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
-           with_content(/python '\/this\/is\/root\/bin\/carbon-cache.py'/).
+           with_content(/exec \/this\/is\/root\/bin\/carbon-cache.py/).
            with_mode('0555') }
     end
 
@@ -111,7 +111,7 @@ describe 'graphite', :type => :class do
   end
 
   it {
-    should contain_exec('init-db').with_command('/usr/bin/python manage.py syncdb --noinput').
+    should contain_exec('init-db').with_command('/opt/graphite/bin/python manage.py syncdb --noinput').
     with_cwd('/opt/graphite/webapp/graphite')
   }
 
