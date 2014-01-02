@@ -19,20 +19,19 @@
 #
 # [*storage_aggregation_source*]
 #   Optional: the source of the storage-aggregation.conf file.
-
+#
 # [*storage_schemas_content*]
 #   Optional: the content of the storage-schemas.conf file.
 #
 # [*storage_schemas_source*]
 #   Optional: the source of the storage-schemas.conf file.
 #
-# [*carbon_conf_content*]
+# [*carbon_content*]
 #   Optional: the content of the carbon.conf file.
 #
-# [*carbon_conf_source*]
+# [*carbon_source*]
 #   Optional: the source of the carbon.conf file.
-
-
+#
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $port = $graphite::params::port,
