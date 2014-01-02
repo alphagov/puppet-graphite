@@ -8,6 +8,13 @@ class graphite::config {
   $port = $::graphite::port
   $root_dir = $::graphite::root_dir
 
+  if ($::graphite::aggregation_rules_source == undef and
+      $::graphite::aggregation_rules_content == undef) {
+    $aggregation_rules_ensure = absent
+  } else {
+    $aggregation_rules_ensure = present
+  }
+
   if ($::graphite::storage_aggregation_source == undef and
       $::graphite::storage_aggregation_content == undef) {
     $storage_aggregation_source = 'puppet:///modules/graphite/storage-aggregation.conf'
@@ -37,11 +44,18 @@ class graphite::config {
 
   file {
   [
+    '/etc/init.d/carbon-aggregator',
     '/etc/init.d/carbon-cache',
     '/etc/init.d/graphite-web'
   ]:
     ensure => link,
     target => '/lib/init/upstart-job',
+  }
+
+  file { '/etc/init/carbon-aggregator.conf':
+    ensure  => present,
+    content => template('graphite/upstart/carbon-aggregator.conf'),
+    mode    => '0555',
   }
 
   file { '/etc/init/carbon-cache.conf':
@@ -60,6 +74,12 @@ class graphite::config {
     ensure    => present,
     content   => $carbon_content,
     source    => $carbon_source,
+  }
+
+  file { "${root_dir}/conf/aggregation-rules.conf":
+    ensure    => $aggregation_rules_ensure,
+    content   => $::graphite::aggregation_rules_content,
+    source    => $::graphite::aggregation_rules_source,
   }
 
   file { "${root_dir}/conf/storage-aggregation.conf":
