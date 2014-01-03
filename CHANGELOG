@@ -1,3 +1,12 @@
+1.0.0 2014-01-13
+- Install (nearly) everything to a Python virtualenv. This will cleanly
+  upgrade existing installations, but you may wish to tidy up some old
+  packages/directories yourself.
+- Pull in `stankevich/python` module.
+- Optional support for carbon-aggregator. See class docs.
+- Allow version to be specified. Currently defaults to `0.9.12`.
+- Make `rake test` call `puppet-syntax`.
+
 0.2.4 2013-12-17
  - Republish of 0.2.3 because Puppetforge won't delete a bad uploaded version
 
