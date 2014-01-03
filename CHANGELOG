@@ -1,4 +1,4 @@
-1.0.0 2014-01-13
+1.0.0 2014-01-03
 - Install (nearly) everything to a Python virtualenv. This will cleanly
   upgrade existing installations, but you may wish to tidy up some old
   packages/directories yourself.
