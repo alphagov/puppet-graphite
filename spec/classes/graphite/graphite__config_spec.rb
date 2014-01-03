@@ -1,48 +1,82 @@
 require 'spec_helper'
 
 describe 'graphite', :type => :class do
+  it { should contain_file('/etc/init.d/carbon-aggregator').with_ensure('link').
+       with_target('/lib/init/upstart-job') }
   it { should contain_file('/etc/init.d/carbon-cache').with_ensure('link').
        with_target('/lib/init/upstart-job') }
   it { should contain_file('/etc/init.d/graphite-web').with_ensure('link').
        with_target('/lib/init/upstart-job') }
+
   it { should contain_file('/opt/graphite/storage').with_owner('www-data').
        with_mode('0775') }
   it { should contain_file('/opt/graphite/storage/whisper').
        with_owner('www-data').with_mode('0775') }
 
-  describe "carbon-cache.conf" do
+  context "root_dir" do
     let(:params) {{ :root_dir => '/this/is/root' }}
-    it { should contain_file('/etc/init/carbon-cache.conf').with_ensure('present').
-         with_content(/chdir '\/this\/is\/root'/).
-         with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
-         with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
-         with_content(/python '\/this\/is\/root\/bin\/carbon-cache.py'/).
-         with_mode('0555') }
-  end
 
-  describe "graphite-web.conf" do
-    let(:params) {{ :root_dir => '/this/is/root' }}
-    it { should contain_file('/etc/init/graphite-web.conf').with_ensure('present').
-         with_content(/chdir '\/this\/is\/root\/webapp'/).
-         with_content(/PYTHONPATH='\/this\/is\/root\/webapp'/).
-         with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
-         with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
-         with_mode('0555') }
-  end
+    describe "intial_data.json" do
+      it { should contain_file('/this/is/root/webapp/graphite/initial_data.json') }
+    end
 
-  describe "carbon.conf" do
-    context 'with unconfigured carbon contents' do
-      let(:params) {{ :root_dir => '/this/is/root' }}
+    describe "carbon-aggregator.conf" do
+      it { should contain_file('/etc/init/carbon-aggregator.conf').with_ensure('present').
+           with_content(/chdir '\/this\/is\/root'/).
+           with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
+           with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
+           with_content(/python '\/this\/is\/root\/bin\/carbon-aggregator.py'/).
+           with_mode('0555') }
+    end
+
+    describe "carbon-cache.conf" do
+      it { should contain_file('/etc/init/carbon-cache.conf').with_ensure('present').
+           with_content(/chdir '\/this\/is\/root'/).
+           with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
+           with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
+           with_content(/python '\/this\/is\/root\/bin\/carbon-cache.py'/).
+           with_mode('0555') }
+    end
+
+    describe "graphite-web.conf" do
+      it { should contain_file('/etc/init/graphite-web.conf').with_ensure('present').
+           with_content(/chdir '\/this\/is\/root\/webapp'/).
+           with_content(/PYTHONPATH='\/this\/is\/root\/webapp'/).
+           with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
+           with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
+           with_mode('0555') }
+    end
+
+    describe "carbon.conf" do
       it { should contain_file('/this/is/root/conf/carbon.conf').
            with_content(/LOCAL_DATA_DIR = \/this\/is\/root\/storage\/whisper\//) }
-      end
+    end
+  end
+
+  context "carbon_content" do
+    let(:params) {{ :root_dir => '/this/is/root', :carbon_content => 'SOMEVAR=SOMECONTENT' }}
 
     context 'with configured carbon contents' do
-      let(:params) {{ :root_dir => '/this/is/root', :carbon_content => 'SOMEVAR=SOMECONTENT' }}
       it { should contain_file('/this/is/root/conf/carbon.conf').with_ensure('present').
            with_content(/SOMECONTENT/) }
     end
+  end
 
+  describe "aggregation-rules.conf" do
+    context 'with unconfigured aggregation rules' do
+      it { should contain_file('/opt/graphite/conf/aggregation-rules.conf').
+           with_ensure('absent') }
+      it { should_not contain_file('/etc/init/carbon-aggregator.conf').
+           with_content(/--rules/) }
+    end
+
+    context 'with configured aggregation rules' do
+      let(:params) { {'aggregation_rules_content' => "Elephants and giraffes!" } }
+      it { should contain_file('/opt/graphite/conf/aggregation-rules.conf').
+           with_content("Elephants and giraffes!") }
+      it { should contain_file('/etc/init/carbon-aggregator.conf').
+           with_content(/--rules='\/opt\/graphite\/conf\/aggregation-rules\.conf'/) }
+    end
   end
 
   describe "storage-aggregation.conf" do
@@ -69,6 +103,11 @@ describe 'graphite', :type => :class do
       it { should contain_file('/opt/graphite/conf/storage-schemas.conf').
            with_content("Giraffes and elephants!") }
     end
+  end
+
+  context 'with admin password' do
+    let(:params) { {'admin_password' => 'should be a hash' }}
+    it { should contain_file('/opt/graphite/webapp/graphite/initial_data.json').with_content(/should be a hash/) }
   end
 
   it {
