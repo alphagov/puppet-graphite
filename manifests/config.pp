@@ -100,7 +100,7 @@ class graphite::config {
   }
 
   exec { 'init-db':
-    command   => '/usr/bin/python manage.py syncdb --noinput',
+    command   => "${root_dir}/bin/python manage.py syncdb --noinput",
     cwd       => "${root_dir}/webapp/graphite",
     creates   => "${root_dir}/storage/graphite.db",
     subscribe => File["${root_dir}/storage"],
@@ -123,7 +123,6 @@ class graphite::config {
     ensure    => 'directory',
     owner     => 'www-data',
     mode      => '0775',
-    subscribe => Exec['graphite/install graphite-web'],
   }
 
   file { "${root_dir}/webapp/graphite/local_settings.py":

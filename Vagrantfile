@@ -9,9 +9,19 @@ DEBIAN_FRONTEND=noninteractive apt-get -qy update
 if [ ! -e /etc/puppet/modules/stdlib ]; then
   puppet module install puppetlabs-stdlib --modulepath /etc/puppet/modules
 fi
+if [ ! -e /etc/puppet/modules/python ]; then
+  puppet module install stankevich-python --modulepath /etc/puppet/modules
+fi
 
 puppet apply --verbose -e "node default { \
-  class { 'graphite': root_dir => '/var/lib/graphite' } \
+  class { 'python': \
+    pip        => true, \
+    dev        => true, \
+    virtualenv => true, \
+  } \
+  class { 'graphite': \
+    root_dir => '/var/lib/graphite', \
+  } \
 }"
 EOM
 

@@ -1,11 +1,20 @@
 require 'spec_helper'
 
-describe 'graphite', :type => :class do
-  let(:version) { '0.9.12' }
+shared_examples "pip_package" do |package|
+  it { should contain_python__pip("#{package}==1.2.3").
+       with_virtualenv('/this/is/root').
+       with_environment(["PYTHONPATH=/this/is/root/lib:/this/is/root/webapp"]) }
+end
 
-  it { should contain_package('whisper').with_ensure(version) }
-  it { should contain_exec('graphite/install carbon').
-       with_command("/usr/bin/pip install --install-option=\"--prefix=/opt/graphite\" --install-option=\"--install-lib=/opt/graphite/lib\" carbon==#{version}") }
-  it { should contain_exec('graphite/install graphite-web').
-       with_command("/usr/bin/pip install --install-option=\"--prefix=/opt/graphite\" --install-option=\"--install-lib=/opt/graphite/webapp\" graphite-web==#{version}") }
+describe 'graphite', :type => :class do
+  context 'root_dir and version' do
+    let(:params) {{
+      :version  => '1.2.3',
+      :root_dir => '/this/is/root',
+    }}
+
+    it_should_behave_like "pip_package", "whisper"
+    it_should_behave_like "pip_package", "carbon"
+    it_should_behave_like "pip_package", "graphite-web"
+  end
 end

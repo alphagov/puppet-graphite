@@ -6,9 +6,23 @@ Status](https://secure.travis-ci.org/gds-operations/puppet-graphite.png)](http:/
 
 # Usage
 
-Nice and simple, mainly because it's not yet very configurable.
+You will need Python, Python's development headers/libs, pip and virtualenv
+installed. If you're not already managing these you can use the `python`
+module, which is included as a dependency:
 
-    include graphite
+```puppet
+class { 'python':
+  pip        => true,
+  dev        => true,
+  virtualenv => true,
+}
+```
+
+Then for the simplest possible configuration:
+
+```puppet
+include graphite
+```
 
 ## Configuration
 
