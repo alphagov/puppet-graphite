@@ -47,9 +47,6 @@ class { 'graphite':
 }
 ```
 
-However, it's worth saying that this won't deal with upgrades. It'll
-only install the provided version on a clean run.
-
 ## Another Graphite module?
 
 Graphite can be painfull to install and many blog posts and gists are
