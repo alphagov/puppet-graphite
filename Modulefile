@@ -7,4 +7,4 @@ source        'https://github.com/gds-operations/puppet-graphite'
 project_page  'https://github.com/gds-operations/puppet-graphite'
 
 dependency    'puppetlabs/stdlib', '>= 2.5.0'
-dependency    'stankevich/python', '>= 1.2.0'
+dependency    'stankevich/python', '>= 1.7.0'
