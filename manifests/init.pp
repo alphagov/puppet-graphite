@@ -49,7 +49,7 @@
 #   Optional: the source of the carbon.conf file.
 #
 # [*version*]
-#   Optional: Version of Graphite and Carbon to install
+#   Graphite package version to install.
 #
 class graphite(
   $admin_password = $graphite::params::admin_password,
@@ -65,8 +65,12 @@ class graphite(
   $storage_schemas_source = undef,
   $carbon_source = undef,
   $carbon_content = undef,
-  $version = $graphite::params::version,
+  $version = '0.9.12-2',
 ) inherits graphite::params {
+  validate_string($admin_password)
+  validate_bool($carbon_aggregator)
+  validate_string($version)
+
   class{'graphite::deps': } ->
   class{'graphite::install': } ->
   class{'graphite::config': } ~>
