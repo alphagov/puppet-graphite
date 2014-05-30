@@ -44,6 +44,7 @@
 #
 class graphite(
   $admin_password = $graphite::params::admin_password,
+  $listen = "127.0.0.1",
   $port = $graphite::params::port,
   $root_dir = $graphite::params::root_dir,
   $carbon_aggregator = false,
