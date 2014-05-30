@@ -6,6 +6,7 @@ class graphite::config {
 
   $admin_password = $::graphite::admin_password
   $port = $::graphite::port
+  $listen = $::graphite::listen
   $root_dir = $::graphite::root_dir
 
   if ($::graphite::aggregation_rules_source == undef and
