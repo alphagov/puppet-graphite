@@ -7,10 +7,11 @@ class graphite::install {
   $ver = $::graphite::version
 
   python::pip { [
-    "whisper==${ver}",
-    "carbon==${ver}",
-    "graphite-web==${ver}"
+    'whisper',
+    'carbon',
+    'graphite-web'
   ]:
+    ensure      => $ver,
     virtualenv  => $root_dir,
     environment => ["PYTHONPATH=${root_dir}/lib:${root_dir}/webapp"],
   }
