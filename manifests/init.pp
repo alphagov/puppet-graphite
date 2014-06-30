@@ -8,11 +8,17 @@
 # [*admin_password*]
 #   The (hashed) initial admin password.
 #
+# [*bind_address*]
+#   The address on which to serve the graphite-web user interface.
+#   Default: 127.0.0.1
+#
 # [*port*]
 #   The port on which to serve the graphite-web user interface.
+#   Default: 8000
 #
 # [*root_dir*]
 #   Where to install Graphite.
+#   Default: /opt/graphite
 #
 # [*carbon_aggregator*]
 #   Optional: Boolean, whether to run carbon-aggregator. You will need to
@@ -44,6 +50,7 @@
 #
 class graphite(
   $admin_password = $graphite::params::admin_password,
+  $bind_address = $graphite::params::bind_address,
   $port = $graphite::params::port,
   $root_dir = $graphite::params::root_dir,
   $carbon_aggregator = false,
