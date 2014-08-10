@@ -23,14 +23,21 @@ class graphite::deps {
     virtualenv => $root_dir,
   }
 
-  ensure_packages(['python-cairo'])
+  $system_packages = $::osfamily ? {
+    'Debian'  => ['python-cairo'],
+    'RedHat'  => ['pycairo'],
+    default   => [],
+  }
+
+  ensure_packages($system_packages)
 
   file { "${root_dir}/lib/python2.7/site-packages/cairo":
     ensure  => link,
     target  => '/usr/lib/python2.7/dist-packages/cairo',
     require => [
       Python::Virtualenv[$root_dir],
-      Package['python-cairo'],
+      # Package['python-cairo'],
+      Package[$system_packages],
     ],
   }
 }

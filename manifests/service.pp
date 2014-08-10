@@ -12,19 +12,19 @@ class graphite::service {
     ensure     => $aggregator_ensure,
     hasstatus  => true,
     hasrestart => true,
-    provider   => upstart,
+    provider   => $::graphite::params::init_style,
   } ->
   service { 'carbon-cache':
     ensure     => running,
     hasstatus  => true,
     hasrestart => true,
-    provider   => upstart,
+    provider   => $::graphite::params::init_style,
   }
 
   service { 'graphite-web':
     ensure     => running,
     hasstatus  => true,
     hasrestart => true,
-    provider   => upstart,
+    provider   => $::graphite::params::init_style,
   }
 }

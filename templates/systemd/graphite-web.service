@@ -1,0 +1,16 @@
+[Unit]
+Description=Graphite realtime graphing engine
+Wants=basic.target
+After=basic.target network.target
+
+[Service]
+EnvironmentFile=/etc/sysconfig/graphite-web
+User=<%= @user %>
+ExecStart=<%= @root_dir %>/bin/gunicorn_django -b <%= @bind_address -%>:<%= @port %> -w2 graphite/settings.py
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target

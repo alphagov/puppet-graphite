@@ -20,6 +20,10 @@
 #   Where to install Graphite.
 #   Default: /opt/graphite
 #
+# [*user*]
+#   User the graphite-web user interface runs as.
+#   Default: www-data for Debian-based, apache for RedHat-based systems.
+#
 # [*carbon_aggregator*]
 #   Optional: Boolean, whether to run carbon-aggregator. You will need to
 #   provide an appropriate `carbon_content` or `carbon_source` config.
@@ -53,6 +57,7 @@ class graphite(
   $bind_address = $graphite::params::bind_address,
   $port = $graphite::params::port,
   $root_dir = $graphite::params::root_dir,
+  $user = $graphite::params::user,
   $carbon_aggregator = false,
   $aggregation_rules_content = undef,
   $aggregation_rules_source = undef,

@@ -56,5 +56,5 @@ the other puppet modules I found either lacked support for
 Ubuntu/Debian, relied on an undocumented package or did a lot of
 wgetting. 
 
-Although I've only tested this module on Ubuntu it should work on other
-distros too, maybe with minor tweaks.
+Tested on Ubuntu and CentOS 7, though other RHEL variants including < 7.x 
+and Fedora should work (bug reports welcome).

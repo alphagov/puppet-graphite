@@ -8,6 +8,9 @@ class graphite::config {
   $bind_address = $::graphite::bind_address
   $port = $::graphite::port
   $root_dir = $::graphite::root_dir
+  $user = $graphite::user
+  $init_style = $graphite::params::init_style
+  $sysconfig = $graphite::params::sysconfig
 
   if ($::graphite::aggregation_rules_source == undef and
       $::graphite::aggregation_rules_content == undef) {
@@ -43,32 +46,96 @@ class graphite::config {
     $carbon_content = $::graphite::carbon_content
   }
 
-  file {
-  [
-    '/etc/init.d/carbon-aggregator',
-    '/etc/init.d/carbon-cache',
-    '/etc/init.d/graphite-web'
-  ]:
-    ensure => link,
-    target => '/lib/init/upstart-job',
+  # Environment variables kept centrally, will also work for Debian
+  # by reworking upstart scripts to remove 'env' entries and add:
+  #   pre-start script
+  #     [ -f  <%= @sysconfig %>/carbon-aggregator ] && \
+  #       . <%= @sysconfig %>/carbon-aggregator
+  #   end script
+  if $::osfamily == 'RedHat' {
+    file { "${sysconfig}/carbon-aggregator":
+      ensure  => present,
+      content => template('graphite/sysconfig/carbon-aggregator'),
+      mode    => '0644',
+    }
+    file { "${sysconfig}/carbon-cache":
+      ensure  => present,
+      content => template('graphite/sysconfig/carbon-cache'),
+      mode    => '0644',
+    }
+    file { "${sysconfig}/graphite-web":
+      ensure  => present,
+      content => template('graphite/sysconfig/graphite-web'),
+      mode    => '0644',
+    }
   }
 
-  file { '/etc/init/carbon-aggregator.conf':
-    ensure  => present,
-    content => template('graphite/upstart/carbon-aggregator.conf'),
-    mode    => '0555',
-  }
+  case $init_style {
 
-  file { '/etc/init/carbon-cache.conf':
-    ensure  => present,
-    content => template('graphite/upstart/carbon-cache.conf'),
-    mode    => '0555',
-  }
+    'upstart': {
+      file {
+      [
+        '/etc/init.d/carbon-aggregator',
+        '/etc/init.d/carbon-cache',
+        '/etc/init.d/graphite-web'
+      ]:
+        ensure => link,
+        target => '/lib/init/upstart-job',
+      }
 
-  file { '/etc/init/graphite-web.conf':
-    ensure  => present,
-    content => template('graphite/upstart/graphite-web.conf'),
-    mode    => '0555',
+      file { '/etc/init/carbon-aggregator.conf':
+        ensure  => present,
+        content => template('graphite/upstart/carbon-aggregator.conf'),
+        mode    => '0555',
+      }
+
+      file { '/etc/init/carbon-cache.conf':
+        ensure  => present,
+        content => template('graphite/upstart/carbon-cache.conf'),
+        mode    => '0555',
+      }
+
+      file { '/etc/init/graphite-web.conf':
+        ensure  => present,
+        content => template('graphite/upstart/graphite-web.conf'),
+        mode    => '0555',
+      }
+    }
+    'systemd' : {
+      file { '/lib/systemd/system/carbon-aggregator.service':
+        ensure  => present,
+        content => template('graphite/systemd/carbon-aggregator.service'),
+        mode    => '0644',
+      }
+      file { '/lib/systemd/system/carbon-cache.service':
+        ensure  => present,
+        content => template('graphite/systemd/carbon-cache.service'),
+        mode    => '0644',
+      }
+      file { '/lib/systemd/system/graphite-web.service':
+        ensure  => present,
+        content => template('graphite/systemd/graphite-web.service'),
+        mode    => '0644',
+      }
+    }
+    'init', default : {
+      file { '/etc/init.d/carbon-aggregator':
+        ensure  => present,
+        content => template('graphite/init/carbon-aggregator'),
+        mode    => '0755',
+      }
+      file { '/etc/init.d/carbon-cache':
+        ensure  => present,
+        content => template('graphite/init/carbon-cache'),
+        mode    => '0755',
+      }
+      file { '/etc/init.d/graphite-web':
+        ensure  => present,
+        content => template('graphite/init/graphite-web'),
+        mode    => '0755',
+      }
+    }
+
   }
 
   file { "${root_dir}/conf/carbon.conf":
@@ -96,7 +163,7 @@ class graphite::config {
   }
 
   file { ["${root_dir}/storage", "${root_dir}/storage/whisper"]:
-    owner => 'www-data',
+    owner => $user,
     mode  => '0775',
   }
 
@@ -115,15 +182,15 @@ class graphite::config {
   }
 
   file { "${root_dir}/storage/graphite.db":
-    owner     => 'www-data',
+    owner     => $user,
     mode      => '0664',
     subscribe => Exec['init-db'],
   }
 
   file { "${root_dir}/storage/log/webapp/":
-    ensure => 'directory',
-    owner  => 'www-data',
-    mode   => '0775',
+    ensure    => 'directory',
+    owner     => $user,
+    mode      => '0775',
   }
 
   file { "${root_dir}/webapp/graphite/local_settings.py":
