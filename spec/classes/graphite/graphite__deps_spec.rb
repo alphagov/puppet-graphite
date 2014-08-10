@@ -48,7 +48,7 @@ describe 'graphite', :type => :class do
       let(:facts) {{ :osfamily => 'RedHat' }}
       it { should contain_file('/this/is/root/lib/python2.7/site-packages/cairo').
         with_ensure('link').
-        with_target('/usr/lib/python2.7/dist-packages/cairo').
+        with_target('/usr/lib64/python2.7/site-packages/cairo').
         with_require(['Python::Virtualenv[/this/is/root]', 'Package[pycairo]']) }
     end
   end
