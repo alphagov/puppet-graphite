@@ -22,7 +22,7 @@
 #
 # [*user*]
 #   User the graphite-web user interface runs as.
-#   Default: www-data for Debian-based, apache for RedHat-based systems.
+#   Default: www-data for Debian-based, root for RedHat-based systems.
 #
 # [*carbon_aggregator*]
 #   Optional: Boolean, whether to run carbon-aggregator. You will need to
