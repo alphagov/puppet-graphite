@@ -22,7 +22,7 @@ describe 'graphite', :type => :class do
       it { should contain_service('carbon-aggregator').with_ensure('running') }
     end
     context 'redhat' do
-      let(:facts) {{ :osfamily => 'Debian' }}
+      let(:facts) {{ :osfamily => 'RedHat' }}
       it { should contain_service('carbon-aggregator').with_ensure('running') }
     end
   end
