@@ -60,7 +60,7 @@ describe 'graphite', :type => :class do
     context "centos init" do
       let(:facts) {{
         :osfamily => 'RedHat',
-        :operatingsystem => 'RedHat',
+        :operatingsystem => 'Centos',
         :operatingsystemrelease => '6'
       }}
       it { should contain_file('/etc/init.d/carbon-aggregator') }
