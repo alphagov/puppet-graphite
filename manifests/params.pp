@@ -11,13 +11,18 @@ class graphite::params {
 
   case $::osfamily {
     'Debian': {
-      $user       = 'www-data'
-      $init_style = 'upstart'
-      $sysconfig  = '/etc/default'
+      $user         = 'www-data'
+      $sysconfig    = '/etc/default'
+      $packages     = ['python-cairo']
+      $cairo_target = '/usr/lib/python2.7/dist-packages/cairo'
+      $init_style   = 'upstart'
     }
     'RedHat': {
-      $user       = 'root'
-      $sysconfig  = '/etc/sysconfig'
+      $user         = 'root'
+      $sysconfig    = '/etc/sysconfig'
+      $packages     = ['pycairo']
+      $cairo_target = '/usr/lib64/python2.7/site-packages/cairo'
+
       if ($::operatingsystem != 'Fedora'
           and versioncmp($::operatingsystemrelease, '7') >= 0)
         or ($::operatingsystem == 'Fedora'
