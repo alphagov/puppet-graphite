@@ -72,27 +72,27 @@ class graphite::config {
   }
 
   file { "${root_dir}/conf/carbon.conf":
-    ensure    => present,
-    content   => $carbon_content,
-    source    => $carbon_source,
+    ensure  => present,
+    content => $carbon_content,
+    source  => $carbon_source,
   }
 
   file { "${root_dir}/conf/aggregation-rules.conf":
-    ensure    => $aggregation_rules_ensure,
-    content   => $::graphite::aggregation_rules_content,
-    source    => $::graphite::aggregation_rules_source,
+    ensure  => $aggregation_rules_ensure,
+    content => $::graphite::aggregation_rules_content,
+    source  => $::graphite::aggregation_rules_source,
   }
 
   file { "${root_dir}/conf/storage-aggregation.conf":
-    ensure    => present,
-    content   => $storage_aggregation_content,
-    source    => $storage_aggregation_source,
+    ensure  => present,
+    content => $storage_aggregation_content,
+    source  => $storage_aggregation_source,
   }
 
   file { "${root_dir}/conf/storage-schemas.conf":
-    ensure    => present,
-    content   => $storage_schemas_content,
-    source    => $storage_schemas_source,
+    ensure  => present,
+    content => $storage_schemas_content,
+    source  => $storage_schemas_source,
   }
 
   file { ["${root_dir}/storage", "${root_dir}/storage/whisper"]:
@@ -121,9 +121,9 @@ class graphite::config {
   }
 
   file { "${root_dir}/storage/log/webapp/":
-    ensure    => 'directory',
-    owner     => 'www-data',
-    mode      => '0775',
+    ensure => 'directory',
+    owner  => 'www-data',
+    mode   => '0775',
   }
 
   file { "${root_dir}/webapp/graphite/local_settings.py":
