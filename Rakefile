@@ -18,6 +18,28 @@ exclude_paths = [
 ]
 PuppetLint.configuration.ignore_paths = exclude_paths
 
+desc "Run beaker tests against all OS types"
+task :acceptance => [
+   'acceptance:ubuntu1204',
+   'acceptance:centos64',
+]
+namespace :acceptance do
+   desc "Run beaker tests against Ubuntu 12.04 x86_64"
+   RSpec::Core::RakeTask.new(:ubuntu1204) do |t|
+       puts "Running acceptance tests for Ubuntu"
+       ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
+       ENV['BEAKER_set'] = 'ubuntu-1204-x64'
+       t.pattern = 'spec/acceptance'
+   end
+   desc "Run beaker tests against CentOS 6.4 x86_64"
+   RSpec::Core::RakeTask.new(:centos64) do |t|
+       puts "Running acceptance tests for CentOS"
+       ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
+       ENV['BEAKER_set'] = 'centos-64-x64'
+       t.pattern = 'spec/acceptance'
+   end
+end
+
 desc "Run syntax, lint, and spec tests."
 task :test => [
   :syntax,
