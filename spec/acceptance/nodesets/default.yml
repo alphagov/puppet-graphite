@@ -1,0 +1,8 @@
+HOSTS:
+  ubuntu1204:
+    platform: ubuntu-12.04-x86_64
+    box : govuk_dev_precise64_20140430
+    box_url : http://gds-boxes.s3.amazonaws.com/govuk_dev_precise64_20140430.box
+    hypervisor : vagrant
+CONFIG:
+  type: foss
