@@ -1,0 +1,20 @@
+[Unit]
+Description=Carbon aggregator service for Graphite
+Wants=basic.target
+After=basic.target network.target
+
+[Service]
+EnvironmentFile=/etc/sysconfig/carbon-aggregator
+User=<%= @user %>
+ExecStart=<%= @root_dir %>/bin/carbon-aggregator.py \
+<% if @aggregation_rules_ensure == 'present' -%>
+    --rules='<%= @root_dir %>/conf/aggregation-rules.conf' \
+<% end -%>
+    --debug start
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target
