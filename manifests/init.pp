@@ -65,6 +65,9 @@ class graphite(
   $storage_schemas_source = undef,
   $carbon_source = undef,
   $carbon_content = undef,
+  $carbon_max_cache_size = 'inf',
+  $carbon_max_creates_per_minute = 'inf',
+  $carbon_max_updates_per_second = 'inf',
   $version = '0.9.12-2',
 ) inherits graphite::params {
   validate_string($admin_password)
