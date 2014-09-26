@@ -13,6 +13,7 @@ unless ENV['RS_PROVISION'] == 'no' or ENV['BEAKER_provision'] == 'no'
       on host, 'rpm -i http://mirrorservice.org/sites/dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm', :acceptable_exit_codes => [0,1]
       on host, 'yum clean all && yum makecache', :acceptable_exit_codes => [0,1]
       on host, 'service iptables stop', :acceptable_exit_codes => [0,1]
+      on host, 'yum -y install nc'
     end
     on host, "mkdir -p #{host['distmoduledir']}"
     on host, 'puppet module install puppetlabs-stdlib', :acceptable_exit_codes => [0,1]

@@ -148,7 +148,7 @@ describe 'graphite', :type => :class do
           with_content(/^\. \/etc\/sysconfig\/graphite-web/).
           with_content(/^DAEMON=\/this\/is\/root\/bin\/gunicorn_django/).
           with_content(/^DAEMON_OPTS=\"-b 127\.0\.0\.1:8000/).
-          with_content(/^DAEMON_OPTS=\".*--daemon graphite\/settings.py\"/).
+          with_content(/^DAEMON_OPTS=\".*settings.py\"/).
           with_mode('0755') }
       end
     end

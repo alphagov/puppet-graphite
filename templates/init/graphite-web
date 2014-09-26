@@ -5,6 +5,7 @@
 # Default-Stop:      0 1 6
 # Short-Description: Graphite realtime graphing engine
 # Description:       Graphite realtime graphing engine
+# chkconfig: 2345 99 01
 ### END INIT INFO
 
 . /etc/init.d/functions
@@ -25,14 +26,14 @@ DESC=gunicorn-graphite
 DAEMON=<%= @root_dir %>/bin/gunicorn_django
 
 # DAEMON_OPTS="--user=$USER --group=$GROUP --bind=$BIND --pid=$PID --workers=$WORKERS --name=$APP --preload --daemon"
-DAEMON_OPTS="-b <%= @bind_address -%>:<%= @port %> -w2 --pid=$PID --daemon graphite/settings.py"
+DAEMON_OPTS="-b <%= @bind_address -%>:<%= @port %> -w2 --pid=$PID settings.py"
 
 case "$1" in
   start)
         CD_TO_APP_DIR="cd $APP_ROOT"
 
         echo -n "Starting $DESC: "
-        $CD_TO_APP_DIR && $DAEMON $DAEMON_OPTS
+        $CD_TO_APP_DIR && $DAEMON $DAEMON_OPTS >/opt/graphite/storage/log/webapp/initscript.log 2>&1 &
         echo "$NAME."
         ;;
   stop)
