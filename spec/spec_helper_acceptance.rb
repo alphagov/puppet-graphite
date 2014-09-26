@@ -9,6 +9,10 @@ unless ENV['RS_PROVISION'] == 'no' or ENV['BEAKER_provision'] == 'no'
                    :default_action => 'gem_install' })
   hosts.each {|h| on h, "/bin/echo '' > #{h['hieraconf']}" }
   hosts.each do |host|
+    if host['platform'] =~ /el-6/
+      on host, 'rpm -i http://mirrorservice.org/sites/dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm', :acceptable_exit_codes => [0,1]
+      on host, 'yum clean all && yum makecache', :acceptable_exit_codes => [0,1]
+    end
     on host, "mkdir -p #{host['distmoduledir']}"
     on host, 'puppet module install puppetlabs-stdlib', :acceptable_exit_codes => [0,1]
     on host, 'puppet module install stankevich-python', :acceptable_exit_codes => [0,1]
