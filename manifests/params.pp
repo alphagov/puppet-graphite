@@ -11,18 +11,34 @@ class graphite::params {
 
   case $::osfamily {
     'Debian': {
-      $user         = 'www-data'
-      $sysconfig    = '/etc/default'
-      $packages     = ['python-cairo']
-      $cairo_target = '/usr/lib/python2.7/dist-packages/cairo'
-      $init_style   = 'upstart'
+      $user           = 'www-data'
+      $sysconfig      = '/etc/default'
+      $packages       = ['python-cairo']
+      $python_version = '2.7'
+      $cairo_target   = "/usr/lib/python${python_version}/dist-packages/cairo"
+      $init_style     = 'upstart'
     }
     'RedHat': {
       $user         = 'root'
       $sysconfig    = '/etc/sysconfig'
       $packages     = ['pycairo']
-      $cairo_target = '/usr/lib64/python2.7/site-packages/cairo'
-
+      # RedHat uses different library directories on x86_64 arches
+      if ($::architecture == 'x86_64') {
+        $libdir = '/usr/lib64'
+      } else {
+        $libdir = '/usr/lib'
+      }
+      # Version of RedHat < 7 have Python 2.6 as the default
+      if (
+          (($::operatingsystem == 'RedHat') or ($::operatingsystem == 'CentOS'))
+            and ($::operatingsystemmajrelease < '7')
+        )
+      {
+        $python_version = 2.6
+      } else {
+        $python_version = 2.7
+      }
+      $cairo_target = "${libdir}/python${python_version}/site-packages/cairo"
       if ($::operatingsystem != 'Fedora'
           and versioncmp($::operatingsystemrelease, '7') >= 0)
         or ($::operatingsystem == 'Fedora'

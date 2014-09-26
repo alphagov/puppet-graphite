@@ -45,7 +45,7 @@ describe 'graphite', :type => :class do
         with_require(['Python::Virtualenv[/this/is/root]', 'Package[python-cairo]']) }
     end
     context 'redhat' do
-      let(:facts) {{ :osfamily => 'RedHat' }}
+      let(:facts) {{ :osfamily => 'RedHat', :operatingsystemmajrelease => 7, :architecture => 'x86_64' }}
       it { should contain_file('/this/is/root/lib/python2.7/site-packages/cairo').
         with_ensure('link').
         with_target('/usr/lib64/python2.7/site-packages/cairo').
