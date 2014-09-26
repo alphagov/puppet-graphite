@@ -56,5 +56,31 @@ the other puppet modules I found either lacked support for
 Ubuntu/Debian, relied on an undocumented package or did a lot of
 wgetting. 
 
-Although I've only tested this module on Ubuntu it should work on other
-distros too, maybe with minor tweaks.
+Tested on Ubuntu and CentOS 7, though other RHEL variants including < 7.x 
+and Fedora should work (bug reports welcome).
+
+# Running Tests
+
+## Spec tests (with rspec)
+
+```
+    $ bundle exec rake test
+```
+
+## Acceptance tests (with beaker)
+
+```
+# List the available test nodes:
+$ bundle exec rake beaker_nodes
+centos-64-x64
+ubuntu-1204-x64
+
+# Run tests against one node
+$ BEAKER_set=centos-64-x64 bundle exec rake beaker
+
+# Run tests when Virtualbox is not your default Vagrant provider
+$ VAGRANT_DEFAULT_PROVIDER=virtualbox BEAKER_set=ubuntu-1204-x64 bundle exec rake beaker
+
+# Run the tests and do not kill the nodes after the run (to allow debugging)
+$ BEAKER_destory=no BEAKER_set=centos-64-x64 bundle exec rake beaker
+```

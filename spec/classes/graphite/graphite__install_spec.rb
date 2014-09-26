@@ -7,14 +7,22 @@ shared_examples "pip_package" do |package|
 end
 
 describe 'graphite', :type => :class do
-  context 'root_dir and version' do
+  describe 'root_dir and version' do
     let(:params) {{
       :version  => '1.2.3',
       :root_dir => '/this/is/root',
     }}
-
-    it_should_behave_like "pip_package", "whisper"
-    it_should_behave_like "pip_package", "carbon"
-    it_should_behave_like "pip_package", "graphite-web"
+    context 'debian' do
+      let(:facts) {{ :osfamily => 'Debian' }}
+      it_should_behave_like "pip_package", "whisper"
+      it_should_behave_like "pip_package", "carbon"
+      it_should_behave_like "pip_package", "graphite-web"
+    end
+    context 'redhat' do
+      let(:facts) {{ :osfamily => 'RedHat' }}
+      it_should_behave_like "pip_package", "whisper"
+      it_should_behave_like "pip_package", "carbon"
+      it_should_behave_like "pip_package", "graphite-web"
+    end
   end
 end

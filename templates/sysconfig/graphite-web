@@ -1,0 +1,4 @@
+APP_ROOT="<%= @root_dir %>/webapp/graphite"
+PYTHONPATH="<%= @root_dir %>/webapp"
+GRAPHITE_STORAGE_DIR="<%= @root_dir %>/storage"
+GRAPHITE_CONF_DIR="<%= @root_dir %>/conf"
