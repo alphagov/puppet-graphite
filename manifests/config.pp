@@ -116,7 +116,7 @@ file { "${root_dir}/conf/carbon.conf":
     require => Package['python-carbon'],
   }
 
-  file { '/opt/graphite/storage':
+  file { [ '/opt/graphite/storage', '/opt/graphite/storage/whisper' ]:
     ensure => directory,
   }
 
