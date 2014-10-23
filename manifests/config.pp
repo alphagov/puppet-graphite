@@ -133,7 +133,7 @@ file { "${root_dir}/conf/carbon.conf":
                       File['/etc/init/graphite-web.conf'],
                       File['/etc/init/carbon-cache.conf'],
                       File['/opt/graphite/storage'],
-                   ],
+                  ],
     before      => [ Service['graphite-web'], Service['carbon-cache'] ],
   }
 
