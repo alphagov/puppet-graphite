@@ -1,6 +1,6 @@
 # == Class: graphite::config
 #
-# Class to set up all graphite related configuration files and dependencies
+# Class to set up all graphite related configuration files and dependencies.
 #
 class graphite::config {
 
@@ -52,34 +52,34 @@ class graphite::config {
     target => '/lib/init/upstart-job',
   }
 
+
   file { '/etc/init/carbon-aggregator.conf':
     ensure  => present,
     content => template('graphite/upstart/carbon-aggregator.conf'),
-    owner   => root,
-    group   => root,
+    owner   => $::graphite::user,
+    group   => $::graphite::group,
     mode    => '0444',
   }
 
   file { '/etc/init/carbon-cache.conf':
     ensure  => present,
     content => template('graphite/upstart/carbon-cache.conf'),
-    owner   => root,
-    group   => root,
+    owner   => $::graphite::user,
+    group   => $::graphite::group,
     mode    => '0444',
   }
 
   file { '/etc/init/graphite-web.conf':
-    ensure  => present,
     content => template('graphite/upstart/graphite-web.conf'),
-    owner   => root,
-    group   => root,
+    owner   => $::graphite::user,
+    group   => $::graphite::group,
     mode    => '0444',
   }
- 
+
 file { "${root_dir}/conf/carbon.conf":
     content => template('graphite/carbon.conf'),
-    owner   => root,
-    group   => root,
+    owner   => $::graphite::user,
+    group   => $::graphite::group,
     mode    => '0444',
     require => Package['python-carbon'],
   }
@@ -88,18 +88,20 @@ file { "${root_dir}/conf/carbon.conf":
     ensure  => $aggregation_rules_ensure,
     content => $::graphite::aggregation_rules_content,
     source  => $::graphite::aggregation_rules_source,
-    owner   => root,
-    group   => root,
+    owner   => $::graphite::user,
+    group   => $::graphite::group,
     mode    => '0444',
     require => Package['python-carbon'],
   }
+
+
 
   file { "${root_dir}/conf/storage-aggregation.conf":
     ensure  => present,
     content => $storage_aggregation_content,
     source  => $storage_aggregation_source,
-    owner   => root,
-    group   => root,
+    owner   => $::graphite::user,
+    group   => $::graphite::group,
     mode    => '0444',
     require => Package['python-carbon'],
   }
@@ -108,17 +110,31 @@ file { "${root_dir}/conf/carbon.conf":
     ensure  => present,
     content => $storage_schemas_content,
     source  => $storage_schemas_source,
-    owner   => root,
-    group   => root,
+    owner   => $::graphite::user,
+    group   => $::graphite::group,
     mode    => '0444',
     require => Package['python-carbon'],
   }
 
-  file { ["${root_dir}/storage", "${root_dir}/storage/whisper"]:
+  file { '/opt/graphite/storage':
     ensure => directory,
-    owner  => 'www-data',
-    group  => root,
-    mode   => '0775',
+  }
+
+  # Using Exec instead of File resource, simply because the graphite directory
+  # can grow very large, and managing large directories with Puppet can lead
+  # to memory starvation.
+  # The exec will use xargs and parralise chmod, so even for large directories
+  # it should run pretty quickly.
+  exec { 'set_graphite_ownership':
+    command     => "find /opt/graphite/storage | xargs -n 50 -P 4 chown ${::graphite::user}:${graphite::group}",
+    refreshonly => true,
+    require     => File['/opt/graphite/storage'],
+    subscribe   => [
+                      File['/etc/init/graphite-web.conf'],
+                      File['/etc/init/carbon-cache.conf'],
+                      File['/opt/graphite/storage'],
+                   ],
+    before      => [ Service['graphite-web'], Service['carbon-cache'] ],
   }
 
   exec { 'init-db':
@@ -142,16 +158,16 @@ file { "${root_dir}/conf/carbon.conf":
   }
 
   file { "${root_dir}/storage/log/webapp/":
-    ensure => 'directory',
-    owner  => 'www-data',
+    ensure => directory,
+    owner  => $::graphite::user,
     mode   => '0775',
   }
 
   file { "${root_dir}/webapp/graphite/local_settings.py":
     ensure  => present,
     source  => 'puppet:///modules/graphite/local_settings.py',
-    owner   => root,
-    group   => root,
+    owner   => $::graphite::user,
+    group   => $::graphite::group,
     mode    => '0444',
     require => Package['python-graphite-web'],
   }
