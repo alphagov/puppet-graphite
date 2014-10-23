@@ -63,16 +63,31 @@ class graphite(
   $storage_aggregation_source = undef,
   $storage_schemas_content = undef,
   $storage_schemas_source = undef,
+  $user = 'www-data',
+  $group = 'www-data',
+  $manage_user = false,
   $carbon_source = undef,
   $carbon_content = undef,
   $carbon_max_cache_size = 'inf',
   $carbon_max_creates_per_minute = 'inf',
   $carbon_max_updates_per_second = 'inf',
   $version = '0.9.12-2',
-) inherits graphite::params {
-  validate_string($admin_password)
-  validate_bool($carbon_aggregator)
-  validate_string($version)
+) {
+  validate_string(
+    $admin_password,
+    $version,
+    $carbon_cache_user,
+    $carbon_cache_group,
+  )
+  validate_bool(
+    $carbon_aggregator,
+    $manage_user
+  )
+
+  if $::graphite::manage_user {
+    class{'graphite::user':}
+    Class['graphite::user'] -> Class['graphite::config']
+  }
 
   class{'graphite::deps': } ->
   class{'graphite::install': } ->
