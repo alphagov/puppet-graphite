@@ -76,8 +76,8 @@ class graphite(
   validate_string(
     $admin_password,
     $version,
-    $carbon_cache_user,
-    $carbon_cache_group,
+    $user,
+    $group,
   )
   validate_bool(
     $carbon_aggregator,
