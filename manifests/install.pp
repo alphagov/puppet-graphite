@@ -4,15 +4,25 @@
 #
 class graphite::install {
   $root_dir = $::graphite::root_dir
+  $carbon = $::graphite::carbon_pkg_name
+  $whisper = $::graphite::whisper_pkg_name
+  $graphite_web = $::graphite::graphite_web_pkg_name
   $ver = $::graphite::version
 
-  python::pip { [
-    "whisper==${ver}",
-    "carbon==${ver}",
-    "graphite-web==${ver}"
-  ]:
-    virtualenv  => $root_dir,
-    environment => ["PYTHONPATH=${root_dir}/lib:${root_dir}/webapp"],
+  if $::graphite::use_python_pip {
+    python::pip { [
+      "${whisper}==${ver}",
+      "${carbon}==${ver}",
+      "${graphite_web}==${ver}"
+    ]:
+      virtualenv  => $root_dir,
+      environment => ["PYTHONPATH=${root_dir}/lib:${root_dir}/webapp"],
+    }
+  }
+  else {
+    package { [$carbon, $graphite_web, $whisper]:
+      ensure => $ver,
+    }
   }
 
 }

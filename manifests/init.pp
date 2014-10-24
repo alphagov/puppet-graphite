@@ -48,6 +48,9 @@
 # [*carbon_source*]
 #   Optional: the source of the carbon.conf file.
 #
+# [*version*]
+#   Graphite package version to install.
+#
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $bind_address = $graphite::params::bind_address,
@@ -63,8 +66,35 @@ class graphite(
   $carbon_source = undef,
   $carbon_content = undef,
   $version = $graphite::params::version,
+  $user = 'www-data',
+  $group = 'www-data',
+  $manage_user = false,
+  $carbon_max_cache_size = 'inf',
+  $carbon_max_creates_per_minute = 'inf',
+  $carbon_max_updates_per_second = 'inf',
+  $use_python_pip = true,
+  $whisper_pkg_name = 'whisper',
+  $carbon_pkg_name = 'carbon',
+  $graphite_web_pkg_name = 'graphite-web',
 ) inherits graphite::params {
-  class{'graphite::deps': } ->
+  validate_string(
+    $admin_password,
+    $version,
+    $user,
+    $group,
+  )
+  validate_bool($manage_user)
+
+  if $::graphite::manage_user {
+    class{'graphite::user':}
+    Class['graphite::user'] -> Class['graphite::config']
+  }
+
+  if $use_python_pip {
+    class{'graphite::deps':}
+    Class['graphite::deps'] -> Class['graphite::install']
+  }  
+
   class{'graphite::install': } ->
   class{'graphite::config': } ~>
   class{'graphite::service': } ->
