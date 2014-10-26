@@ -93,7 +93,8 @@ class graphite(
   if $use_python_pip {
     class{'graphite::deps':}
     Class['graphite::deps'] -> Class['graphite::install']
-  }  
+  }
+
   class{'graphite::install': } ->
   class{'graphite::config': } ~>
   class{'graphite::service': } ->
