@@ -45,7 +45,7 @@ class graphite::config {
 
   $initdb_cmd = $::graphite::use_python_pip ? {
     true  => "${root_dir}/bin/python manage.py syncdb --noinput",
-    false => "python manage.py syncdb --noinput"
+    false => 'python manage.py syncdb --noinput'
   }
 
   file {
@@ -117,7 +117,8 @@ class graphite::config {
   }
 
   exec { 'set_graphite_ownership':
-    command     => "find /opt/graphite/storage | xargs -n 50 -P 4 chown ${::graphite::user}:${graphite::group}",
+    command     => "find /opt/graphite/storage | xargs -n 50 -P 4 \
+                      chown ${::graphite::user}:${graphite::group}",
     refreshonly => true,
     require     => File['/opt/graphite/storage'],
     subscribe   => [

@@ -1,3 +1,10 @@
+# == Class: graphite::user
+#
+# Class to create and manage the user (and group) used to run Graphite
+# and associated services.
+#
+# This class is only used if $graphite::manage_user is set to true.
+#
 class graphite::user {
 
   group { 'carbon_cache_group':
