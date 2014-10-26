@@ -24,6 +24,15 @@
 #   Optional: Boolean, whether to run carbon-aggregator. You will need to
 #   provide an appropriate `carbon_content` or `carbon_source` config.
 #
+# [*carbon_max_cache_size*]
+#   Optional: Set Carbon MAX_CACHE_SIZE
+#
+# [*carbon_max_creates_per_minute*]
+#   Optional: Set Carbon MAX_CREATES
+#
+# [*carbon_max_updates_per_second*]
+#   Optional: Set Carbon MAX_UPDATES_PER_MIN
+#
 # [*aggregation_rules_content*]
 #   Optional: the content of the aggregation-rules.conf file.
 #
@@ -51,12 +60,37 @@
 # [*version*]
 #   Graphite package version to install.
 #
+# [*user*]
+#   Optional: User account used for Graphite services
+#
+# [*group*]
+#   Optional: Group account used for Graphite services
+#
+# [*manage_user*]
+#   Optional: Manage the user and group account with Puppet
+#
+# [*use_python_pip*]
+#   Optional: Use Python pip to install Graphite services. If set to
+#   false, then 'Package' resource type is used.
+#
+# [*whisper_pkg_name*]
+#   Optional: Whisper package name
+#
+# [*carbon_pkg_name*]
+#   Optional: Carbon package name
+#
+# [*graphite_web_pkg_name*]
+#   Optional: Grpahite-Web package name
+#
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $bind_address = $graphite::params::bind_address,
   $port = $graphite::params::port,
   $root_dir = $graphite::params::root_dir,
   $carbon_aggregator = false,
+  $carbon_max_cache_size = 'inf',
+  $carbon_max_creates_per_minute = 'inf',
+  $carbon_max_updates_per_second = 'inf',
   $aggregation_rules_content = undef,
   $aggregation_rules_source = undef,
   $storage_aggregation_content = undef,
@@ -69,9 +103,6 @@ class graphite(
   $user = $graphite::params::user,
   $group = $graphite::params::group,
   $manage_user = false,
-  $carbon_max_cache_size = 'inf',
-  $carbon_max_creates_per_minute = 'inf',
-  $carbon_max_updates_per_second = 'inf',
   $use_python_pip = true,
   $whisper_pkg_name = 'whisper',
   $carbon_pkg_name = 'carbon',
