@@ -7,7 +7,7 @@ class graphite::params {
   $bind_address = '127.0.0.1'
   $port = 8000
   $root_dir = '/opt/graphite'
-  $version = '0.9.12',
-  $user = 'www-data',
-  $group = 'www-data',
+  $version = '0.9.12'
+  $user = 'www-data'
+  $group = 'www-data'
 }
