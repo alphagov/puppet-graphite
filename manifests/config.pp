@@ -117,14 +117,14 @@ class graphite::config {
   }
 
   exec { 'set_graphite_ownership':
-    command     => "find /opt/graphite/storage | xargs -n 50 -P 4 \
+    command     => "find ${root_dir}/{storage,webapp} | xargs -n 50 -P 4 \
                       chown ${::graphite::user}:${graphite::group}",
     refreshonly => true,
-    require     => File['/opt/graphite/storage'],
+    require     => File["${root_dir}/storage"],
     subscribe   => [
                       File['/etc/init/graphite-web.conf'],
                       File['/etc/init/carbon-cache.conf'],
-                      File['/opt/graphite/storage'],
+                      File["${root_dir}/storage"],
                   ],
     before      => [ Service['graphite-web'], Service['carbon-cache'] ],
   }
