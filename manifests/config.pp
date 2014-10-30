@@ -8,6 +8,8 @@ class graphite::config {
   $bind_address = $::graphite::bind_address
   $port = $::graphite::port
   $root_dir = $::graphite::root_dir
+  $user = $::graphite::user
+  $group = $::graphite::group
 
   if ($::graphite::aggregation_rules_source == undef and
       $::graphite::aggregation_rules_content == undef) {
