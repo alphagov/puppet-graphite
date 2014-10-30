@@ -10,6 +10,9 @@ class graphite::config {
   $root_dir = $::graphite::root_dir
   $user = $::graphite::user
   $group = $::graphite::group
+  $carbon_max_cache_size = $::graphite::carbon_max_cache_size
+  $carbon_max_updates_per_second = $::graphite::carbon_max_updates_per_second
+  $carbon_max_creates_per_minute = $::graphite::carbon_max_creates_per_minute
 
   if ($::graphite::aggregation_rules_source == undef and
       $::graphite::aggregation_rules_content == undef) {

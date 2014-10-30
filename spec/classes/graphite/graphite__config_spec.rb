@@ -59,6 +59,9 @@ describe 'graphite', :type => :class do
     describe "carbon.conf" do
       it { should contain_file('/this/is/root/conf/carbon.conf').
            with_content(/USER = www-data/).
+           with_content(/MAX_CACHE_SIZE = inf/).
+           with_content(/MAX_UPDATES_PER_SECOND = inf/).
+           with_content(/MAX_CREATES_PER_MINUTE = inf/).
            with_content(/LOCAL_DATA_DIR = \/this\/is\/root\/storage\/whisper\//) }
     end
   end
