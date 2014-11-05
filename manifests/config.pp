@@ -131,8 +131,8 @@ file { "${root_dir}/conf/carbon.conf":
   # The exec will use xargs and parralise chmod, so even for large directories
   # it should run pretty quickly.
   exec { 'set_graphite_ownership':
-    command     => "find ${root_dir}/storage ${root_dir}/webapp | \
-                      xargs -n 50 -P 4 \
+    command     => "find ${root_dir}/storage ${root_dir}/webapp -print0 | \
+                      xargs -0 -n 50 -P 4 \
                       chown ${::graphite::user}:${graphite::group}",
     refreshonly => true,
     require     => File["${root_dir}/storage"],
