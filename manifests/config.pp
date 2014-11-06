@@ -49,7 +49,8 @@ class graphite::config {
   }
 
   $initdb_cmd = $::graphite::use_python_pip ? {
-    true  => "${root_dir}/bin/python manage.py syncdb --noinput",
+    true  => "${root_dir}/bin/python ${root_dir}/lib/graphite/manage.py \
+    syncdb --noinput",
     false => 'python manage.py syncdb --noinput'
   }
 
@@ -117,11 +118,16 @@ class graphite::config {
     mode    => '0444',
   }
 
-  file { [ "${root_dir}/storage", "${root_dir}/storage/whisper" ]:
+  file { [
+            "${root_dir}/storage",
+            "${root_dir}/storage/whisper",
+            "${root_dir}/webapp/graphite",
+        ]:
     ensure => directory,
   }
 
   exec { 'set_graphite_ownership':
+    path        => '/bin:/usr/bin:/usr/local/bin',
     command     => "find ${root_dir}/storage ${root_dir}/webapp -print0 | \
                       xargs -0 -n 50 -P 4 \
                       chown ${::graphite::user}:${graphite::group}",
@@ -131,6 +137,7 @@ class graphite::config {
                       File['/etc/init/graphite-web.conf'],
                       File['/etc/init/carbon-cache.conf'],
                       File["${root_dir}/storage"],
+                      File["${root_dir}/webapp/graphite"],
                   ],
     before      => [ Service['graphite-web'], Service['carbon-cache'] ],
   }
