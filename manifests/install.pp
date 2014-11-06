@@ -14,15 +14,15 @@ class graphite::install {
       "${whisper}==${ver}",
       "${carbon}==${ver}",
     ]:
-      virtualenv  => $root_dir,
-      environment => ["PYTHONPATH=${root_dir}/lib:${root_dir}/webapp"],
+      virtualenv   => $root_dir,
+      environment  => ["PYTHONPATH=${root_dir}/lib:${root_dir}/webapp"],
       install_args => "--install-option=\"--prefix=${root_dir}\" --install-option=\"--install-lib=${root_dir}/lib\""
     }
     python::pip { [
       "${graphite_web}==${ver}"
     ]:
-      virtualenv  => $root_dir,
-      environment => ["PYTHONPATH=${root_dir}/lib:${root_dir}/webapp"],
+      virtualenv   => $root_dir,
+      environment  => ["PYTHONPATH=${root_dir}/lib:${root_dir}/webapp"],
       install_args => "--install-option=\"--prefix=${root_dir}\" --install-option=\"--install-lib=${root_dir}/webapp\""
     }
   }
