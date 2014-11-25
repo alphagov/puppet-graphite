@@ -139,7 +139,10 @@ class graphite::config {
                       File["${root_dir}/storage"],
                       File["${root_dir}/webapp/graphite"],
                   ],
-    before      => [ Service['graphite-web'], Service['carbon-cache'] ],
+    before      => [
+                      Service['graphite-web'],
+                      Service['carbon-cache'],
+                  ],
   }
 
   exec { 'init-db':
