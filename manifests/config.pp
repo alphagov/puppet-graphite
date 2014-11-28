@@ -88,7 +88,6 @@ class graphite::config {
     ensure  => present,
     content => $carbon_content,
     source  => $carbon_source,
-    owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
   }
@@ -97,7 +96,6 @@ class graphite::config {
     ensure  => $aggregation_rules_ensure,
     content => $::graphite::aggregation_rules_content,
     source  => $::graphite::aggregation_rules_source,
-    owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
   }
@@ -106,7 +104,6 @@ class graphite::config {
     ensure  => present,
     content => $storage_aggregation_content,
     source  => $storage_aggregation_source,
-    owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
   }
@@ -115,7 +112,6 @@ class graphite::config {
     ensure  => present,
     content => $storage_schemas_content,
     source  => $storage_schemas_source,
-    owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
   }
@@ -176,10 +172,12 @@ class graphite::config {
   file { "${root_dir}/webapp/graphite/local_settings.py":
     ensure  => present,
     source  => 'puppet:///modules/graphite/local_settings.py',
-    owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
-    require => File["${root_dir}/storage"],
+    require => [
+                  File["${root_dir}/storage"],
+                  Exec['set_graphite_ownership']
+              ]
   }
 
 }
