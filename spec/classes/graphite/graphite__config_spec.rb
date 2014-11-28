@@ -30,7 +30,7 @@ describe 'graphite', :type => :class do
            with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
            with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
            with_content(/exec \/this\/is\/root\/bin\/carbon-aggregator.py/).
-           with_mode('0555') }
+           with_mode('0444') }
     end
 
     describe "carbon-cache.conf" do
@@ -41,7 +41,7 @@ describe 'graphite', :type => :class do
            with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
            with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
            with_content(/exec \/this\/is\/root\/bin\/carbon-cache.py/).
-           with_mode('0555') }
+           with_mode('0444') }
     end
 
     describe "graphite-web.conf" do
@@ -53,7 +53,7 @@ describe 'graphite', :type => :class do
            with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
            with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
            with_content(/-b127\.0\.0\.1:8000/).
-           with_mode('0555') }
+           with_mode('0444') }
     end
 
     describe "carbon.conf" do
@@ -124,7 +124,7 @@ describe 'graphite', :type => :class do
   end
 
   it {
-    should contain_exec('init-db').with_command('/opt/graphite/bin/python /opt/graphite/lib/graphite/manage.py syncdb --noinput').
+    should contain_exec('init-db').with_command('/opt/graphite/bin/python manage.py syncdb --noinput').
     with_cwd('/opt/graphite/webapp/graphite')
   }
 

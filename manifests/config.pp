@@ -69,30 +69,25 @@ class graphite::config {
   file { '/etc/init/carbon-aggregator.conf':
     ensure  => present,
     content => template('graphite/upstart/carbon-aggregator.conf'),
-    owner   => $::graphite::user,
-    group   => $::graphite::group,
     mode    => '0444',
   }
 
   file { '/etc/init/carbon-cache.conf':
     ensure  => present,
     content => template('graphite/upstart/carbon-cache.conf'),
-    owner   => $::graphite::user,
-    group   => $::graphite::group,
     mode    => '0444',
   }
 
   file { '/etc/init/graphite-web.conf':
     ensure  => present,
     content => template('graphite/upstart/graphite-web.conf'),
-    owner   => $::graphite::user,
-    group   => $::graphite::group,
     mode    => '0444',
   }
 
-file { "${root_dir}/conf/carbon.conf":
-    content => template('graphite/carbon.conf'),
-    owner   => $::graphite::user,
+  file { "${root_dir}/conf/carbon.conf":
+    ensure  => present,
+    content => $carbon_content,
+    source  => $carbon_source,
     group   => $::graphite::group,
     mode    => '0444',
   }
@@ -101,7 +96,6 @@ file { "${root_dir}/conf/carbon.conf":
     ensure  => $aggregation_rules_ensure,
     content => $::graphite::aggregation_rules_content,
     source  => $::graphite::aggregation_rules_source,
-    owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
   }
@@ -110,7 +104,6 @@ file { "${root_dir}/conf/carbon.conf":
     ensure  => present,
     content => $storage_aggregation_content,
     source  => $storage_aggregation_source,
-    owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
   }
@@ -119,7 +112,6 @@ file { "${root_dir}/conf/carbon.conf":
     ensure  => present,
     content => $storage_schemas_content,
     source  => $storage_schemas_source,
-    owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
   }
@@ -132,11 +124,6 @@ file { "${root_dir}/conf/carbon.conf":
     ensure => directory,
   }
 
-  # Using Exec instead of File resource, simply because the graphite directory
-  # can grow very large, and managing large directories with Puppet can lead
-  # to memory starvation.
-  # The exec will use xargs and parralise chmod, so even for large directories
-  # it should run pretty quickly.
   exec { 'set_graphite_ownership':
     path        => '/bin:/usr/bin:/usr/local/bin',
     command     => "find ${root_dir}/storage ${root_dir}/webapp -print0 | \
@@ -185,10 +172,12 @@ file { "${root_dir}/conf/carbon.conf":
   file { "${root_dir}/webapp/graphite/local_settings.py":
     ensure  => present,
     source  => 'puppet:///modules/graphite/local_settings.py',
-    owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
-    require => File["${root_dir}/storage"],
+    require => [
+                  File["${root_dir}/storage"],
+                  Exec['set_graphite_ownership']
+              ]
   }
 
 }
