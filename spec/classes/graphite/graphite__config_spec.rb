@@ -124,7 +124,7 @@ describe 'graphite', :type => :class do
   end
 
   it {
-    should contain_exec('init-db').with_command('/opt/graphite/bin/python /opt/graphite/lib/graphite/manage.py     syncdb --noinput').
+    should contain_exec('init-db').with_command('/opt/graphite/bin/python /opt/graphite/lib/graphite/manage.py syncdb --noinput').
     with_cwd('/opt/graphite/webapp/graphite')
   }
 

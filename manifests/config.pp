@@ -48,10 +48,12 @@ class graphite::config {
     $carbon_content = $::graphite::carbon_content
   }
 
-  $initdb_cmd = $::graphite::use_python_pip ? {
-    true  => "${root_dir}/bin/python ${root_dir}/lib/graphite/manage.py \
-    syncdb --noinput",
-    false => 'python manage.py syncdb --noinput'
+  if $::graphite::use_python_pip == true {
+    $initdb_cmd = "${root_dir}/bin/python ${root_dir}/lib/graphite/manage.py syncdb --noinput"
+    $gunicorn_bin = "${root_dir}/bin/gunicorn_django"
+  } else {
+    $initdb_cmd = 'python manage.py syncdb --noinput'
+    $gunicorn_bin = 'gunicorn_django'
   }
 
   file {
