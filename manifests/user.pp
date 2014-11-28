@@ -20,7 +20,7 @@ class graphite::user {
     shell      => '/usr/sbin/nologin',
     system     => true,
     managehome => false,
-    home       => '/opt/graphite',
+    home       => $::graphite::root_dir,
     require    => Group['carbon_cache_group']
   }
 
