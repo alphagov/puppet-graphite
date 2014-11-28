@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'graphite', :type => :class do
+
   it { should contain_file('/etc/init.d/carbon-aggregator').with_ensure('link').
        with_target('/lib/init/upstart-job') }
   it { should contain_file('/etc/init.d/carbon-cache').with_ensure('link').
@@ -8,10 +9,11 @@ describe 'graphite', :type => :class do
   it { should contain_file('/etc/init.d/graphite-web').with_ensure('link').
        with_target('/lib/init/upstart-job') }
 
-  it { should contain_file('/opt/graphite/storage').with_owner('www-data').
-       with_mode('0775') }
-  it { should contain_file('/opt/graphite/storage/whisper').
-       with_owner('www-data').with_mode('0775') }
+  it do should contain_exec('set_graphite_ownership').with(
+    'before'  => [ 'Service[graphite-web]', 'Service[carbon-cache]' ],
+    'refreshonly' => 'true'
+  )
+  end
 
   context "root_dir" do
     let(:params) {{ :root_dir => '/this/is/root' }}
@@ -22,6 +24,8 @@ describe 'graphite', :type => :class do
 
     describe "carbon-aggregator.conf" do
       it { should contain_file('/etc/init/carbon-aggregator.conf').with_ensure('present').
+           with_content(/setuid www-data/).
+           with_content(/setgid www-data/).
            with_content(/chdir '\/this\/is\/root'/).
            with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
            with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
@@ -31,6 +35,8 @@ describe 'graphite', :type => :class do
 
     describe "carbon-cache.conf" do
       it { should contain_file('/etc/init/carbon-cache.conf').with_ensure('present').
+           with_content(/setuid www-data/).
+           with_content(/setgid www-data/).
            with_content(/chdir '\/this\/is\/root'/).
            with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
            with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
@@ -40,6 +46,8 @@ describe 'graphite', :type => :class do
 
     describe "graphite-web.conf" do
       it { should contain_file('/etc/init/graphite-web.conf').with_ensure('present').
+           with_content(/setuid www-data/).
+           with_content(/setgid www-data/).
            with_content(/chdir '\/this\/is\/root\/webapp'/).
            with_content(/PYTHONPATH='\/this\/is\/root\/webapp'/).
            with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
@@ -50,6 +58,10 @@ describe 'graphite', :type => :class do
 
     describe "carbon.conf" do
       it { should contain_file('/this/is/root/conf/carbon.conf').
+           with_content(/USER = www-data/).
+           with_content(/MAX_CACHE_SIZE = inf/).
+           with_content(/MAX_UPDATES_PER_SECOND = inf/).
+           with_content(/MAX_CREATES_PER_MINUTE = inf/).
            with_content(/LOCAL_DATA_DIR = \/this\/is\/root\/storage\/whisper\//) }
     end
   end

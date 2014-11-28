@@ -8,4 +8,6 @@ class graphite::params {
   $port = 8000
   $root_dir = '/opt/graphite'
   $version = '0.9.12'
+  $user = 'www-data'
+  $group = 'www-data'
 }
