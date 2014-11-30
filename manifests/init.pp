@@ -48,6 +48,9 @@
 # [*carbon_source*]
 #   Optional: the source of the carbon.conf file.
 #
+# [*version*]
+#   Optional: Version of Graphite and Carbon to install
+#
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $bind_address = $graphite::params::bind_address,
