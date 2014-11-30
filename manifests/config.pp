@@ -49,7 +49,8 @@ class graphite::config {
   }
 
   $initdb_cmd = $::graphite::use_python_pip ? {
-    true  => "${root_dir}/bin/python manage.py syncdb --noinput",
+    true  => "${root_dir}/bin/python ${root_dir}/lib/graphite/manage.py \
+    syncdb --noinput",
     false => 'python manage.py syncdb --noinput'
   }
 
