@@ -122,7 +122,11 @@ file { "${root_dir}/conf/carbon.conf":
     mode    => '0444',
   }
 
-  file { [ "${root_dir}/storage", "${root_dir}/storage/whisper" ]:
+  file { [
+            "${root_dir}/storage",
+            "${root_dir}/storage/whisper",
+            "${root_dir}/webapp/graphite",
+        ]:
     ensure => directory,
   }
 
@@ -141,6 +145,7 @@ file { "${root_dir}/conf/carbon.conf":
                       File['/etc/init/graphite-web.conf'],
                       File['/etc/init/carbon-cache.conf'],
                       File["${root_dir}/storage"],
+                      File["${root_dir}/webapp/graphite"],
                   ],
     before      => [ Service['graphite-web'], Service['carbon-cache'] ],
   }
