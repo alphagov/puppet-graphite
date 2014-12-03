@@ -63,33 +63,37 @@ class graphite(
   $storage_aggregation_source = undef,
   $storage_schemas_content = undef,
   $storage_schemas_source = undef,
+  $carbon_source = undef,
+  $carbon_content = undef,
+  $version = $graphite::params::version,
   $user = 'www-data',
   $group = 'www-data',
   $manage_user = false,
-  $carbon_source = undef,
-  $carbon_content = undef,
   $carbon_max_cache_size = 'inf',
   $carbon_max_creates_per_minute = 'inf',
   $carbon_max_updates_per_second = 'inf',
-  $version = '0.9.12-2',
-) {
+  $use_python_pip = true,
+  $whisper_pkg_name = 'whisper',
+  $carbon_pkg_name = 'carbon',
+  $graphite_web_pkg_name = 'graphite-web',
+) inherits graphite::params {
   validate_string(
     $admin_password,
     $version,
     $user,
     $group,
   )
-  validate_bool(
-    $carbon_aggregator,
-    $manage_user
-  )
+  validate_bool($manage_user)
 
   if $::graphite::manage_user {
     class{'graphite::user':}
     Class['graphite::user'] -> Class['graphite::config']
   }
 
-  class{'graphite::deps': } ->
+  if $use_python_pip {
+    class{'graphite::deps':}
+    Class['graphite::deps'] -> Class['graphite::install']
+  }  
   class{'graphite::install': } ->
   class{'graphite::config': } ~>
   class{'graphite::service': } ->

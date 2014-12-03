@@ -42,6 +42,12 @@ class graphite::config {
     $carbon_source = $::graphite::carbon_source
     $carbon_content = $::graphite::carbon_content
   }
+
+  $initdb_cmd = $::graphite::use_python_pip ? {
+    true  => "${root_dir}/bin/python manage.py syncdb --noinput",
+    false => "python manage.py syncdb --noinput"
+  }
+
   file {
   [
     '/etc/init.d/carbon-aggregator',
@@ -51,7 +57,6 @@ class graphite::config {
     ensure => link,
     target => '/lib/init/upstart-job',
   }
-
 
   file { '/etc/init/carbon-aggregator.conf':
     ensure  => present,
@@ -70,6 +75,7 @@ class graphite::config {
   }
 
   file { '/etc/init/graphite-web.conf':
+    ensure  => present,
     content => template('graphite/upstart/graphite-web.conf'),
     owner   => $::graphite::user,
     group   => $::graphite::group,
@@ -81,7 +87,6 @@ file { "${root_dir}/conf/carbon.conf":
     owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
-    require => Package['python-carbon'],
   }
 
   file { "${root_dir}/conf/aggregation-rules.conf":
@@ -91,10 +96,7 @@ file { "${root_dir}/conf/carbon.conf":
     owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
-    require => Package['python-carbon'],
   }
-
-
 
   file { "${root_dir}/conf/storage-aggregation.conf":
     ensure  => present,
@@ -103,7 +105,6 @@ file { "${root_dir}/conf/carbon.conf":
     owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
-    require => Package['python-carbon'],
   }
 
   file { "${root_dir}/conf/storage-schemas.conf":
@@ -113,10 +114,9 @@ file { "${root_dir}/conf/carbon.conf":
     owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
-    require => Package['python-carbon'],
   }
 
-  file { [ '/opt/graphite/storage', '/opt/graphite/storage/whisper' ]:
+  file { [ "${root_dir}/storage", "${root_dir}/storage/whisper" ]:
     ensure => directory,
   }
 
@@ -138,7 +138,7 @@ file { "${root_dir}/conf/carbon.conf":
   }
 
   exec { 'init-db':
-    command   => "${root_dir}/bin/python manage.py syncdb --noinput",
+    command   => $initdb_cmd,
     cwd       => "${root_dir}/webapp/graphite",
     creates   => "${root_dir}/storage/graphite.db",
     subscribe => File["${root_dir}/storage"],
@@ -152,13 +152,13 @@ file { "${root_dir}/conf/carbon.conf":
   }
 
   file { "${root_dir}/storage/graphite.db":
-    owner     => 'www-data',
+    owner     => $::graphite::user,
     mode      => '0664',
     subscribe => Exec['init-db'],
   }
 
   file { "${root_dir}/storage/log/webapp/":
-    ensure => directory,
+    ensure => 'directory',
     owner  => $::graphite::user,
     mode   => '0775',
   }
@@ -169,7 +169,7 @@ file { "${root_dir}/conf/carbon.conf":
     owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
-    require => Package['python-graphite-web'],
+    require => File["${root_dir}/storage"],
   }
 
 }
