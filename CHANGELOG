@@ -1,3 +1,11 @@
+2.0.0 2014-12-05
+- Ability to specify the user used to run the processes
+- Support installation from a Debian package
+- Set carbon cache options via Puppet
+
+When upgrading from 1.0.1, ownership of particular config files and the
+default uid/gid under which the processes run may change.
+
 1.0.1 2014-01-03
 - Correct CHANGELOG date for 1.0.0
 - Correct README to say that we support upgrades.
