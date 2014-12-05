@@ -6,9 +6,10 @@ Status](https://secure.travis-ci.org/gds-operations/puppet-graphite.png)](http:/
 
 # Usage
 
-You will need Python, Python's development headers/libs, pip and virtualenv
-installed. If you're not already managing these you can use the `python`
-module, which is included as a dependency:
+You can either install using a package or Python Pip (default behaviour). If you
+decide to use Pip, then you will need Python, Python's development headers/libs,
+pip and virtualenv installed. If you're not already managing these you can use 
+the `python` module, which is included as a dependency:
 
 ```puppet
 class { 'python':
@@ -22,6 +23,21 @@ Then for the simplest possible configuration:
 
 ```puppet
 include graphite
+```
+
+To install using a package:
+
+```puppet
+class { 'graphite':
+   use_python_pip => false,
+}
+```
+
+To specifiy the package name, use the following parameters:
+```
+whisper_pkg_name
+carbon_pkg_name
+graphite_web_pkg_name
 ```
 
 ## Configuration
