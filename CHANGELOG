@@ -1,3 +1,6 @@
+2.0.2 2014-12-15
+- Lock beaker dependency to ~> 1.17.0 to allow testing on ruby<1.9.3
+
 2.0.1 2014-12-15
 - Fix a cyclical permissions change that happens on each run
 
