@@ -122,6 +122,8 @@ class graphite::config {
             "${root_dir}/webapp/graphite",
         ]:
     ensure => directory,
+    owner  => $::graphite::user,
+    group  => $::graphite::group,
   }
 
   exec { 'set_graphite_ownership':
@@ -153,12 +155,15 @@ class graphite::config {
 
   file { "${root_dir}/webapp/graphite/initial_data.json":
     ensure  => present,
+    owner   => $::graphite::user,
+    group   => $::graphite::group,
     require => File["${root_dir}/storage"],
     content => template('graphite/initial_data.json'),
   }
 
   file { "${root_dir}/storage/graphite.db":
     owner     => $::graphite::user,
+    group     => $::graphite::group,
     mode      => '0664',
     subscribe => Exec['init-db'],
   }
@@ -166,12 +171,14 @@ class graphite::config {
   file { "${root_dir}/storage/log/webapp/":
     ensure => 'directory',
     owner  => $::graphite::user,
+    group  => $::graphite::group,
     mode   => '0775',
   }
 
   file { "${root_dir}/webapp/graphite/local_settings.py":
     ensure  => present,
     source  => 'puppet:///modules/graphite/local_settings.py',
+    owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
     require => [
