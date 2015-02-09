@@ -39,10 +39,8 @@ describe 'graphite' do
 
   describe service('graphite-web') do
     it { should be_running }
-    it 'should open port 8000' do
-      # graphite-web listens on 127.0.0.1 so the port_open? method
-      # won't see it
-      shell('nc -z 127.0.0.1 8000')
+    it 'should serve dashboard without errors' do
+      shell('curl -fsS http://localhost:8000/dashboard/')
     end
   end
 end
