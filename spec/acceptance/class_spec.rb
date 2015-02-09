@@ -31,6 +31,12 @@ shared_examples_for "working graphite" do |puppet_manifest|
       shell('curl -fsS http://localhost:8000/dashboard/')
     end
   end
+
+  describe 'carbon and graphite-web' do
+    it 'should work end-to-end' do
+      run_script_on(hosts.first, File.expand_path('../graphite_integration.rb', __FILE__))
+    end
+  end
 end
 
 describe 'graphite' do
