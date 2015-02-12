@@ -49,7 +49,7 @@ describe 'graphite', :type => :class do
            with_content(/setuid www-data/).
            with_content(/setgid www-data/).
            with_content(/chdir '\/this\/is\/root\/webapp'/).
-           with_content(/PYTHONPATH='\/this\/is\/root\/webapp'/).
+           with_content(/PYTHONPATH='\/this\/is\/root\/lib:\/this\/is\/root\/webapp'/).
            with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
            with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
            with_content(/-b127\.0\.0\.1:8000/).
