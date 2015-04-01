@@ -11,9 +11,7 @@
 class graphite::deps {
   $root_dir = $::graphite::root_dir
 
-  python::virtualenv { $root_dir:
-    mode => '0755',
-  } ->
+  python::virtualenv { $root_dir: } ->
   python::pip { [
     'gunicorn',
     'twisted==11.1.0',
