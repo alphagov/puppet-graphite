@@ -1,3 +1,6 @@
+2.0.4 2015-08-12
+- Make upstart manage the new pidfile that carbon-cache uses
+
 2.0.3 2015-03-27
 - Fix `graphite-web` install when using pip and default `root_dir`
 - Restart services when changing package versions
