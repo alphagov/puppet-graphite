@@ -1,4 +1,6 @@
 ---
+# Run inside a container
+sudo: false
 # Verify this with: http://lint.travis-ci.org/
 language: ruby
 # Delete dependency locks for matrix builds.
