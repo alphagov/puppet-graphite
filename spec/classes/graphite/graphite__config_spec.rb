@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'graphite', :type => :class do
+  let(:facts) { {:osfamily => 'Debian'} }
 
   it { should contain_file('/etc/init.d/carbon-aggregator').with_ensure('link').
        with_target('/lib/init/upstart-job') }

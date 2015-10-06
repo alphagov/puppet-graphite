@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'graphite', :type => :class do
+  let(:facts) { {:osfamily => 'Debian'} }
 
   context 'root_dir' do
     let(:params) {{

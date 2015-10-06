@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'graphite', :type => :class do
+  let(:facts) { {:osfamily => 'Debian'} }
+
   context 'param defaults' do
     it { should contain_service('carbon-aggregator').with_ensure('stopped') }
     it { should contain_service('carbon-cache') }
