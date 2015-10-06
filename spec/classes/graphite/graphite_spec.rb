@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'graphite', :type => :class do
-  let(:facts) { {:osfamily => 'debian'} }
+  let(:facts) { {:osfamily => 'Debian'} }
 
   context 'default params' do
     it { should create_class('graphite::config')}

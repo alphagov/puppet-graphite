@@ -8,6 +8,7 @@ shared_examples "pip_package" do |package|
 end
 
 describe 'graphite', :type => :class do
+  let(:facts) { {:osfamily => 'Debian'} }
 
   context 'use python pip' do
     context 'root_dir and version' do

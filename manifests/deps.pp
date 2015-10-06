@@ -18,6 +18,7 @@ class graphite::deps {
     'django==1.4.10',
     'django-tagging==0.3.1',
     'python-memcached==1.47',
+    'pytz',
     'simplejson==2.1.6',
   ]:
     virtualenv => $root_dir,
