@@ -36,9 +36,9 @@ class graphite::deps {
   }
 
   if $extra_pip_packages {
-    python::pip { "$extra_pip_packages":
-       require    => Python::Virtualenv[$root_dir],
-       virtualenv => $root_dir,
+    python::pip { $extra_pip_packages:
+      require    => Python::Virtualenv[$root_dir],
+      virtualenv => $root_dir,
     }
   }
 
