@@ -11,6 +11,17 @@
 class graphite::deps {
   $root_dir = $::graphite::root_dir
 
+  if $::graphite::database_engine == 'mysql' {
+    $extra_pip_packages = 'MySQL-python'
+    # the Python module for mysql needs the mysql_config binary in order to install 
+    package {'libmysqlclient-dev':
+        ensure => installed,
+        before => Python::Pip[$extra_pip_packages],
+    }
+  } elsif ( $::graphite::database_engine == 'postgresql' or $::graphite::database_engine == 'postgresql_psycopg2') {
+    $extra_pip_packages = 'psycopg2'
+  }
+
   python::virtualenv { $root_dir: } ->
   python::pip { [
     'gunicorn',
@@ -22,6 +33,13 @@ class graphite::deps {
     'simplejson==2.1.6',
   ]:
     virtualenv => $root_dir,
+  }
+
+  if $extra_pip_packages {
+    python::pip { "$extra_pip_packages":
+       require    => Python::Virtualenv[$root_dir],
+       virtualenv => $root_dir,
+    }
   }
 
   ensure_packages(['python-cairo'])

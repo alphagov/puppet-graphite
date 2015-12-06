@@ -82,6 +82,33 @@
 # [*graphite_web_pkg_name*]
 #   Optional: Grpahite-Web package name
 #
+# [*timezone*]
+#   Optional: Greaphite-web timezone setting
+#
+# [*memcache_hosts*]
+#   Optional: List of memcached servers to use
+#
+# [*database_engine*]
+#   Optional: Type of database to use: mysql, postgresql or sqlite3. Default sqlite3
+#
+# [*database_name]
+#   Optional: Default is 'graphite'
+#
+# [*database_user]
+#   Optional: Default is 'graphite'
+#
+# [*database_password]
+#   Optional: Default is ''
+#
+# [*database_host]
+#   Optional: Default is '127.0.0.1'
+#
+# [*database_port]
+#   Optional: Default is '3306'
+#
+# [*django_secret_key*]
+#   Optional: Default is 'UNSAFE_DEFAULT'
+#
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $bind_address = $graphite::params::bind_address,
@@ -107,6 +134,15 @@ class graphite(
   $whisper_pkg_name = 'whisper',
   $carbon_pkg_name = 'carbon',
   $graphite_web_pkg_name = 'graphite-web',
+  $timezone = 'UTC',
+  $memcache_hosts = "[]",
+  $database_engine = "",
+  $database_name = 'graphite',
+  $database_user = 'graphite',
+  $database_password = '',
+  $database_host = '127.0.0.1',
+  $database_port = '3306',
+  $django_secret_key = 'UNSAFE_DEFAULT',
 ) inherits graphite::params {
   validate_string(
     $admin_password,
