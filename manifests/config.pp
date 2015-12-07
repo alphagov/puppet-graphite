@@ -13,6 +13,15 @@ class graphite::config {
   $carbon_max_cache_size = $::graphite::carbon_max_cache_size
   $carbon_max_updates_per_second = $::graphite::carbon_max_updates_per_second
   $carbon_max_creates_per_minute = $::graphite::carbon_max_creates_per_minute
+  $timezone = $::graphite::timezone
+  $memcache_hosts = $::graphite::memcache_hosts
+  $database_engine = $::graphite::database_engine
+  $database_name = $::graphite::database_name
+  $database_user = $::graphite::database_user
+  $database_password = $::graphite::database_password
+  $database_host = $::graphite::database_host
+  $database_port = $::graphite::database_port
+  $django_secret_key = $::graphite::django_secret_key
 
   if ($::graphite::aggregation_rules_source == undef and
       $::graphite::aggregation_rules_content == undef) {
@@ -146,11 +155,11 @@ class graphite::config {
   }
 
   exec { 'init-db':
-    command   => $initdb_cmd,
-    cwd       => "${root_dir}/webapp/graphite",
-    creates   => "${root_dir}/storage/graphite.db",
-    subscribe => File["${root_dir}/storage"],
-    require   => File["${root_dir}/webapp/graphite/initial_data.json"],
+    command     => $initdb_cmd,
+    cwd         => "${root_dir}/webapp/graphite",
+    refreshonly => true,
+    subscribe   => File["${root_dir}/storage"],
+    require     => File["${root_dir}/webapp/graphite/initial_data.json"],
   }
 
   file { "${root_dir}/webapp/graphite/initial_data.json":
@@ -177,14 +186,15 @@ class graphite::config {
 
   file { "${root_dir}/webapp/graphite/local_settings.py":
     ensure  => present,
-    source  => 'puppet:///modules/graphite/local_settings.py',
+    content => template('graphite/local_settings.py.erb'),
     owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
     require => [
                   File["${root_dir}/storage"],
                   Exec['set_graphite_ownership']
-              ]
+              ],
+    notify  => Exec['init-db'],
   }
 
 }
