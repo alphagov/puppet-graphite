@@ -85,6 +85,9 @@
 # [*time_zone*]
 #   Optional: Graphite-web TIME_ZONE setting
 #
+# [*django_secret_key*]
+#   Optional: If not provided the option will not be written to the config file
+#
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $bind_address = $graphite::params::bind_address,
@@ -111,6 +114,7 @@ class graphite(
   $carbon_pkg_name = 'carbon',
   $graphite_web_pkg_name = 'graphite-web',
   $time_zone = $graphite::params::time_zone,
+  $django_secret_key = $graphite::params::django_secret_key,
 ) inherits graphite::params {
   validate_string(
     $admin_password,

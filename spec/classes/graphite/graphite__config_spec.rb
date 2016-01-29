@@ -139,11 +139,25 @@ describe 'graphite', :type => :class do
 
   it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py') }
 
-  context 'with a templated config file' do
+  context 'with a templated time zone value' do
     let(:params) { {'time_zone' => 'CHAST' }}
     it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
        with_content(/TIME_ZONE = 'CHAST'/)
     }
   end
 
+  context 'with a templated django secret key' do
+    context 'no value provided' do
+      it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+           without_content(/SECRET_KEY/)
+      }
+    end
+
+    context 'secret key provided' do
+      let(:params) { {'django_secret_key' => 'wibble' }}
+      it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+           with_content(/SECRET_KEY = 'wibble'/)
+      }
+    end
+  end
 end

@@ -40,3 +40,7 @@ TIME_ZONE = '<%= @time_zone %>'
 #DATABASE_PASSWORD = 'graphite-is-awesome'
 #DATABASE_HOST = 'mysql.mycompany.com'
 #DATABASE_PORT = '3306'
+
+<% if @django_secret_key %>
+SECRET_KEY = '<%= @django_secret_key %>'
+<% end %>

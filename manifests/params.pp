@@ -11,4 +11,5 @@ class graphite::params {
   $user = 'www-data'
   $group = 'www-data'
   $time_zone = 'UTC'
+  $django_secret_key = undef
 }
