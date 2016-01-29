@@ -160,4 +160,27 @@ describe 'graphite', :type => :class do
       }
     end
   end
+
+  context 'with a templated memcache config' do
+    context 'no servers' do
+      it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+           with_content(/MEMCACHE_HOSTS = \[\]/)
+      }
+    end
+
+    context 'a single server' do
+      let(:params) { {'memcache_hosts' => ['127.0.0.1:11211'] }}
+
+      it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+           with_content(/MEMCACHE_HOSTS = \["127.0.0.1:11211"\]/)
+      }
+    end
+    context 'multiple servers' do
+      let(:params) { {'memcache_hosts' => ['127.0.0.1:11211', '127.0.0.2:11211'] }}
+
+      it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+           with_content(/MEMCACHE_HOSTS = \["127.0.0.1:11211", "127.0.0.2:11211"\]/)
+      }
+    end
+  end
 end
