@@ -10,4 +10,5 @@ class graphite::params {
   $version = '0.9.12'
   $user = 'www-data'
   $group = 'www-data'
+  $time_zone = 'UTC'
 }

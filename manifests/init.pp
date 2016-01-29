@@ -82,6 +82,9 @@
 # [*graphite_web_pkg_name*]
 #   Optional: Grpahite-Web package name
 #
+# [*time_zone*]
+#   Optional: Graphite-web TIME_ZONE setting
+#
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $bind_address = $graphite::params::bind_address,
@@ -107,6 +110,7 @@ class graphite(
   $whisper_pkg_name = 'whisper',
   $carbon_pkg_name = 'carbon',
   $graphite_web_pkg_name = 'graphite-web',
+  $time_zone = $graphite::params::time_zone,
 ) inherits graphite::params {
   validate_string(
     $admin_password,

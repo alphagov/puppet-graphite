@@ -137,8 +137,13 @@ describe 'graphite', :type => :class do
     should contain_file('/opt/graphite/storage/log/webapp/').with_owner('www-data')
   }
 
-  it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
-       with_content(/TIME_ZONE/)
-  }
+  it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py') }
+
+  context 'with a templated config file' do
+    let(:params) { {'time_zone' => 'CHAST' }}
+    it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+       with_content(/TIME_ZONE = 'CHAST'/)
+    }
+  end
 
 end
