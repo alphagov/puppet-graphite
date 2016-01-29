@@ -177,7 +177,7 @@ class graphite::config {
 
   file { "${root_dir}/webapp/graphite/local_settings.py":
     ensure  => present,
-    source  => 'puppet:///modules/graphite/local_settings.py',
+    content => template('graphite/local_settings.py.erb'),
     owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',

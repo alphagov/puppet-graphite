@@ -137,9 +137,8 @@ describe 'graphite', :type => :class do
     should contain_file('/opt/graphite/storage/log/webapp/').with_owner('www-data')
   }
 
-  it {
-    should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
-    with_source('puppet:///modules/graphite/local_settings.py')
+  it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+       with_content(/TIME_ZONE/)
   }
 
 end
