@@ -4,10 +4,14 @@
 #DEBUG = True
 
 # Set your local timezone (django will try to figure this out automatically)
-TIME_ZONE = 'UTC'
+TIME_ZONE = '<%= @timezone %>'
 
 # Setting MEMCACHE_HOSTS to be empty will turn off use of memcached entirely
+<% if @memcache_hosts != '[]' -%>
+MEMCACHE_HOSTS = <%= @memcache_hosts %>
+<% else -%>
 #MEMCACHE_HOSTS = ['127.0.0.1:11211']
+<% end -%>
 
 # Sometimes you need to do a lot of rendering work but cannot share your storage mount
 #REMOTE_RENDERING = True
@@ -34,9 +38,34 @@ TIME_ZONE = 'UTC'
 #LDAP_USER_QUERY = "(username=%s)"  #For Active Directory use "(sAMAccountName=%s)"
 
 # If sqlite won't cut it, configure your real database here (don't forget to run manage.py syncdb!)
-#DATABASE_ENGINE = 'mysql' # or 'postgres'
-#DATABASE_NAME = 'graphite'
-#DATABASE_USER = 'graphite'
-#DATABASE_PASSWORD = 'graphite-is-awesome'
-#DATABASE_HOST = 'mysql.mycompany.com'
-#DATABASE_PORT = '3306'
+<% if @database_engine == 'mysql' -%>
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': '<%= @database_name %>',
+        'USER': '<%= @database_user %>',
+        'PASSWORD': '<%= @database_password %>',
+        'HOST': '<%= @database_host %>',
+        'PORT': '<%= @database_port %>',
+    }
+}
+<% elsif @database_engine == 'postgresql' or @database_engine == 'postgresql_psycopg2' -%>
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '<%= @database_name %>',
+        'USER': '<%= @database_user %>',
+        'PASSWORD': '<%= @database_password %>',
+        'HOST': '<%= @database_host %>',
+        'PORT': '<%= @database_port %>',
+    }
+}
+<% else -%>
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '<%= @root_dir %>/storage/<%= @database_name %>',
+    }
+}
+<% end -%>
+SECRET_KEY = '<%= @django_secret_key %>'

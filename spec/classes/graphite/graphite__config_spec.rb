@@ -139,7 +139,8 @@ describe 'graphite', :type => :class do
 
   it {
     should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
-    with_source('puppet:///modules/graphite/local_settings.py')
+    with_content(/TIME_ZONE/).
+    with_content(/DATABASES =/)
   }
 
 end
