@@ -137,9 +137,50 @@ describe 'graphite', :type => :class do
     should contain_file('/opt/graphite/storage/log/webapp/').with_owner('www-data')
   }
 
-  it {
-    should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
-    with_source('puppet:///modules/graphite/local_settings.py')
-  }
+  it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py') }
 
+  context 'with a templated time zone value' do
+    let(:params) { {'time_zone' => 'CHAST' }}
+    it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+       with_content(/TIME_ZONE = 'CHAST'/)
+    }
+  end
+
+  context 'with a templated django secret key' do
+    context 'no value provided' do
+      it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+           without_content(/SECRET_KEY/)
+      }
+    end
+
+    context 'secret key provided' do
+      let(:params) { {'django_secret_key' => 'wibble' }}
+      it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+           with_content(/SECRET_KEY = 'wibble'/)
+      }
+    end
+  end
+
+  context 'with a templated memcache config' do
+    context 'no servers' do
+      it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+           with_content(/MEMCACHE_HOSTS = \[\]/)
+      }
+    end
+
+    context 'a single server' do
+      let(:params) { {'memcache_hosts' => ['127.0.0.1:11211'] }}
+
+      it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+           with_content(/MEMCACHE_HOSTS = \["127.0.0.1:11211"\]/)
+      }
+    end
+    context 'multiple servers' do
+      let(:params) { {'memcache_hosts' => ['127.0.0.1:11211', '127.0.0.2:11211'] }}
+
+      it { should contain_file('/opt/graphite/webapp/graphite/local_settings.py').
+           with_content(/MEMCACHE_HOSTS = \["127.0.0.1:11211", "127.0.0.2:11211"\]/)
+      }
+    end
+  end
 end

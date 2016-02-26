@@ -82,6 +82,15 @@
 # [*graphite_web_pkg_name*]
 #   Optional: Grpahite-Web package name
 #
+# [*time_zone*]
+#   Optional: Graphite-web TIME_ZONE setting
+#
+# [*django_secret_key*]
+#   Optional: If not provided the option will not be written to the config file
+#
+# [*memcache_hosts*]
+#   Optional: Array of memcached servers to use. Each should be ip:port
+#
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $bind_address = $graphite::params::bind_address,
@@ -107,6 +116,9 @@ class graphite(
   $whisper_pkg_name = 'whisper',
   $carbon_pkg_name = 'carbon',
   $graphite_web_pkg_name = 'graphite-web',
+  $time_zone = $graphite::params::time_zone,
+  $django_secret_key = $graphite::params::django_secret_key,
+  $memcache_hosts = $graphite::params::memcache_hosts,
 ) inherits graphite::params {
   validate_string(
     $admin_password,

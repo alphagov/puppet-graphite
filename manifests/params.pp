@@ -10,4 +10,7 @@ class graphite::params {
   $version = '0.9.12'
   $user = 'www-data'
   $group = 'www-data'
+  $time_zone = 'UTC'
+  $django_secret_key = undef
+  $memcache_hosts = []
 }

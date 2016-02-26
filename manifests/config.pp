@@ -13,6 +13,9 @@ class graphite::config {
   $carbon_max_cache_size = $::graphite::carbon_max_cache_size
   $carbon_max_updates_per_second = $::graphite::carbon_max_updates_per_second
   $carbon_max_creates_per_minute = $::graphite::carbon_max_creates_per_minute
+  $time_zone = $::graphite::time_zone
+  $django_secret_key = $::graphite::django_secret_key
+  $memcache_hosts = $::graphite::memcache_hosts
 
   if ($::graphite::aggregation_rules_source == undef and
       $::graphite::aggregation_rules_content == undef) {
@@ -177,7 +180,7 @@ class graphite::config {
 
   file { "${root_dir}/webapp/graphite/local_settings.py":
     ensure  => present,
-    source  => 'puppet:///modules/graphite/local_settings.py',
+    content => template('graphite/local_settings.py.erb'),
     owner   => $::graphite::user,
     group   => $::graphite::group,
     mode    => '0444',
