@@ -2,7 +2,14 @@
 #
 # Class to start carbon-cache and graphite-web processes
 #
-class graphite::service {
+# == Parameters
+#
+# [*provider*]
+#   The service provider to use
+#
+class graphite::service (
+  $provider = 'upstart'
+) {
   $aggregator_ensure = $::graphite::carbon_aggregator ? {
     true    => running,
     default => stopped,
@@ -12,19 +19,19 @@ class graphite::service {
     ensure     => $aggregator_ensure,
     hasstatus  => true,
     hasrestart => false,
-    provider   => upstart,
+    provider   => $provider,
   } ->
   service { 'carbon-cache':
     ensure     => running,
     hasstatus  => true,
     hasrestart => false,
-    provider   => upstart,
+    provider   => $provider,
   }
 
   service { 'graphite-web':
     ensure     => running,
     hasstatus  => true,
     hasrestart => false,
-    provider   => upstart,
+    provider   => $provider,
   }
 }
