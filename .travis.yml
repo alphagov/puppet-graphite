@@ -13,13 +13,13 @@ rvm:
   - 2.2.0
 env:
   matrix:
-  - PUPPET_VERSION="~> 3.8.5"
+  - PUPPET_VERSION="~> 3.8.6"
   - PUPPET_VERSION="~> 4.3.2"
 # https://tickets.puppetlabs.com/browse/PUP-3796
 matrix:
   exclude:
     - rvm: 2.2.0
-      env: PUPPET_VERSION="~> 3.8.5"
+      env: PUPPET_VERSION="~> 3.8.6"
 
 # Only notify for failed builds.
 notifications:
