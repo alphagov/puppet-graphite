@@ -13,7 +13,7 @@ class graphite::deps {
 
   python::virtualenv { $root_dir: } ->
   python::pip { [
-    'gunicorn',
+    'gunicorn==19.3.0',
     'twisted==11.1.0',
     'django==1.4.10',
     'django-tagging==0.3.1',

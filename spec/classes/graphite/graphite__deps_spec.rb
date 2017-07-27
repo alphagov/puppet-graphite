@@ -9,7 +9,7 @@ describe 'graphite', :type => :class do
     }}
 
     it { should contain_python__virtualenv('/this/is/root') }
-    it { should contain_python__pip('gunicorn').with_virtualenv('/this/is/root') }
+    it { should contain_python__pip('gunicorn==19.3.0').with_virtualenv('/this/is/root') }
 
     it { should contain_package('python-cairo').with_ensure('present') }
     it { should contain_file('/this/is/root/lib/python2.7/site-packages/cairo').
