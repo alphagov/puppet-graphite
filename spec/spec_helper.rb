@@ -1,10 +1,12 @@
 require 'puppetlabs_spec_helper/module_spec_helper'
 
-
 RSpec.configure do |c|
 
   c.default_facts = {
-    :lsbdistcodename => 'Jessie',
+    :operatingsystem        => 'Ubuntu',
+    :operatingsystemrelease => 'trusty',
+    :osfamily               => 'Debian',
+    :lsbmajdistrelease      => 14,
   }
 
 end
