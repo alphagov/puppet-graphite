@@ -138,8 +138,8 @@ class graphite(
     Class['graphite::deps'] -> Class['graphite::install']
   }
 
-  class{'graphite::install': } ~>
-  class{'graphite::config': } ~>
-  class{'graphite::service': } ->
-  Class['graphite']
+  class{'graphite::install': }
+  ~> class{'graphite::config': }
+  ~> class{'graphite::service': }
+  -> Class['graphite']
 }

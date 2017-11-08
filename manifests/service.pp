@@ -13,8 +13,8 @@ class graphite::service {
     hasstatus  => true,
     hasrestart => false,
     provider   => upstart,
-  } ->
-  service { 'carbon-cache':
+  }
+  -> service { 'carbon-cache':
     ensure     => running,
     hasstatus  => true,
     hasrestart => false,
