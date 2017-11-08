@@ -11,8 +11,8 @@
 class graphite::deps {
   $root_dir = $::graphite::root_dir
 
-  python::virtualenv { $root_dir: } ->
-  python::pip { [
+  python::virtualenv { $root_dir: }
+  -> python::pip { [
     'gunicorn==19.3.0',
     'twisted==11.1.0',
     'django==1.4.10',
