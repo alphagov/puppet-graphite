@@ -3,7 +3,7 @@
 # Class to set default graphite params
 #
 class graphite::params {
-  $admin_password = 'sha1$1b11b$edeb0a67a9622f1f2cfeabf9188a711f5ac7d236'
+  $admin_password = hiera('admin_pwd')
   $bind_address = '127.0.0.1'
   $port = 8000
   $root_dir = '/opt/graphite'
