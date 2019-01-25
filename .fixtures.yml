@@ -1,6 +1,8 @@
 fixtures:
   repositories:
     stdlib: git://github.com/puppetlabs/puppetlabs-stdlib.git
-    python: git://github.com/voxpupuli/puppet-python.git
+    python:
+      repo: git://github.com/voxpupuli/puppet-python.git
+      ref: 1.19.0
   symlinks:
     graphite: "#{source_dir}"
