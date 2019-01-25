@@ -16,6 +16,10 @@
 #   The port on which to serve the graphite-web user interface.
 #   Default: 8000
 #
+# [*worker_processes*]
+#   The number of worker processes for handling requests.
+#   Default: 2
+#
 # [*root_dir*]
 #   Where to install Graphite.
 #   Default: /opt/graphite
@@ -95,6 +99,7 @@ class graphite(
   $admin_password = $graphite::params::admin_password,
   $bind_address = $graphite::params::bind_address,
   $port = $graphite::params::port,
+  $worker_processes = $graphite::params::worker_processes,
   $root_dir = $graphite::params::root_dir,
   $carbon_aggregator = false,
   $carbon_max_cache_size = 'inf',

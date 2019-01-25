@@ -1,5 +1,6 @@
 Unreleased
 - Switch to using Vox Pupuli for the Python module
+- Make the worker processes for graphite-web configurable.
 
 2.0.6 2017-07-27
 - Pin `gunicorn` to 19.3.0 so that this continues to work with `pip`

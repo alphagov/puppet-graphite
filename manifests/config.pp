@@ -7,6 +7,7 @@ class graphite::config {
   $admin_password = $::graphite::admin_password
   $bind_address = $::graphite::bind_address
   $port = $::graphite::port
+  $worker_processes = $::graphite::worker_processes
   $root_dir = $::graphite::root_dir
   $user = $::graphite::user
   $group = $::graphite::group
