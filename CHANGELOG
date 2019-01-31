@@ -1,4 +1,4 @@
-Unreleased
+2.1.0 2019-01-25
 - Switch to using Vox Pupuli for the Python module
 - Make the worker processes for graphite-web configurable.
 
