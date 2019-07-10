@@ -1,0 +1,24 @@
+[Unit]
+Description=Carbon aggregator service for Graphite
+Wants=network-online.target
+Wants=local-fs.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User=<%= @user %>
+Group=<%= @group %>
+
+Restart=on-failure
+
+WorkingDirectory=<%= @root_dir %>
+
+Environment=GRAPHITE_STORAGE_DIR=<%= @root_dir %>/storage
+Environment=GRAPHITE_CONF_DIR=<%= @root_dir %>/conf
+
+ExecStart=<%= @root_dir %>/bin/carbon-aggregator.py \
+<% if @aggregation_rules_ensure == 'present' -%>
+    --rules='<%= @root_dir %>/conf/aggregation-rules.conf' \
+<% end -%>
+    --debug start

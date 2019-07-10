@@ -95,6 +95,9 @@
 # [*memcache_hosts*]
 #   Optional: Array of memcached servers to use. Each should be ip:port
 #
+# [*service_provider*]
+#   Optional: String to use as a provider for the services (default: upstart)
+#
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $bind_address = $graphite::params::bind_address,
@@ -124,6 +127,7 @@ class graphite(
   $time_zone = $graphite::params::time_zone,
   $django_secret_key = $graphite::params::django_secret_key,
   $memcache_hosts = $graphite::params::memcache_hosts,
+  $service_provider = $graphite::params::service_provider,
 ) inherits graphite::params {
   validate_string(
     $admin_password,

@@ -3,67 +3,121 @@ require 'spec_helper'
 describe 'graphite', :type => :class do
   let(:facts) { {:osfamily => 'Debian'} }
 
-  it { should contain_file('/etc/init.d/carbon-aggregator').with_ensure('link').
-       with_target('/lib/init/upstart-job') }
-  it { should contain_file('/etc/init.d/carbon-cache').with_ensure('link').
-       with_target('/lib/init/upstart-job') }
-  it { should contain_file('/etc/init.d/graphite-web').with_ensure('link').
-       with_target('/lib/init/upstart-job') }
+  context 'upstart_provider' do
+    it { should contain_file('/etc/init.d/carbon-aggregator').with_ensure('link').
+         with_target('/lib/init/upstart-job') }
+    it { should contain_file('/etc/init.d/carbon-cache').with_ensure('link').
+         with_target('/lib/init/upstart-job') }
+    it { should contain_file('/etc/init.d/graphite-web').with_ensure('link').
+         with_target('/lib/init/upstart-job') }
 
-  it do should contain_exec('set_graphite_ownership').with(
-    'before'  => [ 'Service[graphite-web]', 'Service[carbon-cache]' ],
-    'refreshonly' => 'true'
-  )
+    it do should contain_exec('set_graphite_ownership').with(
+      'before'  => [ 'Service[graphite-web]', 'Service[carbon-cache]' ],
+      'refreshonly' => 'true'
+    )
+    end
+
+    context "root_dir" do
+      let(:params) {{ :root_dir => '/this/is/root' }}
+
+      describe "intial_data.json" do
+        it { should contain_file('/this/is/root/webapp/graphite/initial_data.json') }
+      end
+
+      describe "carbon-aggregator.conf" do
+        it { should contain_file('/etc/init/carbon-aggregator.conf').with_ensure('present').
+             with_content(/setuid www-data/).
+             with_content(/setgid www-data/).
+             with_content(/chdir '\/this\/is\/root'/).
+             with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
+             with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
+             with_content(/exec \/this\/is\/root\/bin\/carbon-aggregator.py/).
+             with_mode('0444') }
+      end
+
+      describe "carbon-cache.conf" do
+        it { should contain_file('/etc/init/carbon-cache.conf').with_ensure('present').
+             with_content(/setuid www-data/).
+             with_content(/setgid www-data/).
+             with_content(/chdir '\/this\/is\/root'/).
+             with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
+             with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
+             with_content(/exec \/this\/is\/root\/bin\/carbon-cache.py/).
+             with_mode('0444') }
+      end
+
+      describe "graphite-web.conf" do
+        it { should contain_file('/etc/init/graphite-web.conf').with_ensure('present').
+             with_content(/setuid www-data/).
+             with_content(/setgid www-data/).
+             with_content(/chdir '\/this\/is\/root\/webapp'/).
+             with_content(/PYTHONPATH='\/this\/is\/root\/lib:\/this\/is\/root\/webapp'/).
+             with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
+             with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
+             with_content(/-b127\.0\.0\.1:8000/).
+             with_mode('0444') }
+      end
+
+      describe "carbon.conf" do
+        it { should contain_file('/this/is/root/conf/carbon.conf').
+             with_content(/USER = www-data/).
+             with_content(/MAX_CACHE_SIZE = inf/).
+             with_content(/MAX_UPDATES_PER_SECOND = inf/).
+             with_content(/MAX_CREATES_PER_MINUTE = inf/).
+             with_content(/LOCAL_DATA_DIR = \/this\/is\/root\/storage\/whisper\//) }
+      end
+    end
   end
 
-  context "root_dir" do
-    let(:params) {{ :root_dir => '/this/is/root' }}
+  context "systemd_provider" do
+    let(:params) {{ :service_provider => 'systemd' }}
 
-    describe "intial_data.json" do
-      it { should contain_file('/this/is/root/webapp/graphite/initial_data.json') }
-    end
+    it { should_not contain_file('/etc/init.d/carbon-aggregator').with_ensure('link').
+         with_target('/lib/init/upstart-job') }
+    it { should_not contain_file('/etc/init.d/carbon-cache').with_ensure('link').
+         with_target('/lib/init/upstart-job') }
+    it { should_not contain_file('/etc/init.d/graphite-web').with_ensure('link').
+         with_target('/lib/init/upstart-job') }
 
-    describe "carbon-aggregator.conf" do
-      it { should contain_file('/etc/init/carbon-aggregator.conf').with_ensure('present').
-           with_content(/setuid www-data/).
-           with_content(/setgid www-data/).
-           with_content(/chdir '\/this\/is\/root'/).
-           with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
-           with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
-           with_content(/exec \/this\/is\/root\/bin\/carbon-aggregator.py/).
-           with_mode('0444') }
-    end
+    context "root_dir" do
+      let(:params) {{ :root_dir => '/this/is/root' }}
 
-    describe "carbon-cache.conf" do
-      it { should contain_file('/etc/init/carbon-cache.conf').with_ensure('present').
-           with_content(/setuid www-data/).
-           with_content(/setgid www-data/).
-           with_content(/chdir '\/this\/is\/root'/).
-           with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
-           with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
-           with_content(/exec \/this\/is\/root\/bin\/carbon-cache.py/).
-           with_mode('0444') }
-    end
+      describe "carbon-aggregator.service" do
+        it { should contain_file('/etc/systemd/system/carbon-aggregator.service').
+             with_ensure('present').
+             with_content(/User=www-data/).
+             with_content(/Group=www-data/).
+             with_content(/WorkingDirectory=\/this\/is\/root/).
+             with_content(/Environment=GRAPHITE_STORAGE_DIR=\/this\/is\/root\/storage/).
+             with_content(/Environment=GRAPHITE_CONF_DIR=\/this\/is\/root\/conf/).
+             with_content(/ExecStart=\/this\/is\/root\/bin\/carbon-aggregator.py/).
+             with_mode('0444') }
+      end
 
-    describe "graphite-web.conf" do
-      it { should contain_file('/etc/init/graphite-web.conf').with_ensure('present').
-           with_content(/setuid www-data/).
-           with_content(/setgid www-data/).
-           with_content(/chdir '\/this\/is\/root\/webapp'/).
-           with_content(/PYTHONPATH='\/this\/is\/root\/lib:\/this\/is\/root\/webapp'/).
-           with_content(/GRAPHITE_STORAGE_DIR='\/this\/is\/root\/storage'/).
-           with_content(/GRAPHITE_CONF_DIR='\/this\/is\/root\/conf'/).
-           with_content(/-b127\.0\.0\.1:8000/).
-           with_mode('0444') }
-    end
+      describe "carbon-cache.service" do
+        it { should contain_file('/etc/systemd/system/carbon-cache.service').
+             with_ensure('present').
+             with_content(/User=www-data/).
+             with_content(/Group=www-data/).
+             with_content(/WorkingDirectory=\/this\/is\/root/).
+             with_content(/Environment=GRAPHITE_STORAGE_DIR=\/this\/is\/root\/storage/).
+             with_content(/Environment=GRAPHITE_CONF_DIR=\/this\/is\/root\/conf/).
+             with_content(/ExecStart=\/this\/is\/root\/bin\/carbon-cache.py/).
+             with_mode('0444') }
+      end
 
-    describe "carbon.conf" do
-      it { should contain_file('/this/is/root/conf/carbon.conf').
-           with_content(/USER = www-data/).
-           with_content(/MAX_CACHE_SIZE = inf/).
-           with_content(/MAX_UPDATES_PER_SECOND = inf/).
-           with_content(/MAX_CREATES_PER_MINUTE = inf/).
-           with_content(/LOCAL_DATA_DIR = \/this\/is\/root\/storage\/whisper\//) }
+      describe "graphite-web.service" do
+        it { should contain_file('/etc/systemd/system/graphite-web.service').
+             with_ensure('present').
+             with_content(/User=www-data/).
+             with_content(/Group=www-data/).
+             with_content(/WorkingDirectory=\/this\/is\/root/).
+             with_content(/Environment=PYTHONPATH=\/this\/is\/root\/lib:\/this\/is\/root\/webapp/).
+             with_content(/Environment=GRAPHITE_STORAGE_DIR=\/this\/is\/root\/storage/).
+             with_content(/Environment=GRAPHITE_CONF_DIR=\/this\/is\/root\/conf/).
+             with_content(/-b127\.0\.0\.1:8000/).
+             with_mode('0444') }
+      end
     end
   end
 

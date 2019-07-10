@@ -1,0 +1,21 @@
+[Unit]
+Description=Graphite realtime graphing engine
+Wants=network-online.target
+Wants=local-fs.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User=<%= @user %>
+Group=<%= @group %>
+
+Restart=on-failure
+
+WorkingDirectory=<%= @root_dir %>/webapp
+
+Environment=GRAPHITE_STORAGE_DIR=<%= @root_dir %>/storage
+Environment=GRAPHITE_CONF_DIR=<%= @root_dir %>/conf
+Environment=PYTHONPATH=<%= @root_dir %>/lib:<%= @root_dir %>/webapp
+
+ExecStart=<%= @gunicorn_bin %> -b<%= @bind_address -%>:<%= @port %> -w<%= @worker_processes -%> graphite/settings.py
