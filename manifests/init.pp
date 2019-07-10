@@ -95,6 +95,9 @@
 # [*memcache_hosts*]
 #   Optional: Array of memcached servers to use. Each should be ip:port
 #
+# [*service_provider*]
+#   Optional: String to use as a provider for the services (default: upstart)
+#
 class graphite(
   $admin_password = $graphite::params::admin_password,
   $bind_address = $graphite::params::bind_address,
