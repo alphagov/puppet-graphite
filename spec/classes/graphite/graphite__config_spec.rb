@@ -67,6 +67,58 @@ describe 'graphite', :type => :class do
     end
   end
 
+  context "systemd_provider" do
+    lep(:params) {{ :service_provider => 'systemd' }}
+
+    it { should_not contain_file('/etc/init.d/carbon-aggregator').with_ensure('link').
+         with_target('/lib/init/upstart-job') }
+    it { should_not contain_file('/etc/init.d/carbon-cache').with_ensure('link').
+         with_target('/lib/init/upstart-job') }
+    it { should_not contain_file('/etc/init.d/graphite-web').with_ensure('link').
+         with_target('/lib/init/upstart-job') }
+
+    context "root_dir" do
+      let(:params) {{ :root_dir => '/this/is/root' }}
+
+      describe "carbon-aggregator.service" do
+        it { should contain_file('/etc/systemd/system/carbon-aggregator.service').
+             with_ensure('present').
+             with_content(/User=www-data/).
+             with_content(/Group=www-data/).
+             with_content(/WorkingDirectory=\/this\/is\/root/).
+             with_content(/Environment=GRAPHITE_STORAGE_DIR=\/this\/is\/root\/storage/).
+             with_content(/Environment=GRAPHITE_CONF_DIR=\/this\/is\/root\/conf/).
+             with_content(/ExecStart=\/this\/is\/root\/bin\/carbon-aggregator.py/).
+             with_mode('0444') }
+      end
+
+      describe "carbon-cache.service" do
+        it { should contain_file('/etc/systemd/system/carbon-cache.service').
+             with_ensure('present').
+             with_content(/User=www-data/).
+             with_content(/Group=www-data/).
+             with_content(/WorkingDirectory=\/this\/is\/root/).
+             with_content(/Environment=GRAPHITE_STORAGE_DIR=\/this\/is\/root\/storage/).
+             with_content(/Environment=GRAPHITE_CONF_DIR=\/this\/is\/root\/conf/).
+             with_content(/ExecStart=\/this\/is\/root\/bin\/carbon-cache.py/).
+             with_mode('0444') }
+      end
+
+      describe "graphite-web.service" do
+        it { should contain_file('/etc/systemd/system//graphite-web.service').
+             with_ensure('present').
+             with_content(/User=www-data/).
+             with_content(/Group=www-data/).
+             with_content(/WorkingDirectory=\/this\/is\/root/).
+             with_content(/Environment=PYTHONPATH=\/this\/is\/root\/lib:\/this\/is\/root\/webapp/).
+             with_content(/Environment=GRAPHITE_STORAGE_DIR=\/this\/is\/root\/storage/).
+             with_content(/Environment=GRAPHITE_CONF_DIR=\/this\/is\/root\/conf/).
+             with_content(/-b127\.0\.0\.1:8000/).
+             with_mode('0444') }
+      end
+    end
+  end
+
   context "carbon_content" do
     let(:params) {{ :root_dir => '/this/is/root', :carbon_content => 'SOMEVAR=SOMECONTENT' }}
 
