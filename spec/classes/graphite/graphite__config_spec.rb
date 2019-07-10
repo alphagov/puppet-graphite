@@ -68,7 +68,7 @@ describe 'graphite', :type => :class do
   end
 
   context "systemd_provider" do
-    lep(:params) {{ :service_provider => 'systemd' }}
+    let(:params) {{ :service_provider => 'systemd' }}
 
     it { should_not contain_file('/etc/init.d/carbon-aggregator').with_ensure('link').
          with_target('/lib/init/upstart-job') }
