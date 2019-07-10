@@ -60,31 +60,39 @@ class graphite::config {
     $gunicorn_bin = 'gunicorn_django'
   }
 
-  file {
-  [
-    '/etc/init.d/carbon-aggregator',
-    '/etc/init.d/carbon-cache',
-    '/etc/init.d/graphite-web'
-  ]:
-    ensure => link,
-    target => '/lib/init/upstart-job',
+  if $::graphite::service_provider == 'upstart' {
+    file {
+      [
+        '/etc/init.d/carbon-aggregator',
+        '/etc/init.d/carbon-cache',
+        '/etc/init.d/graphite-web'
+      ]:
+        ensure => link,
+        target => '/lib/init/upstart-job',
+    }
+
+    $base_service_path = '/etc/init/'
+    $service_suffix = 'conf'
+  } elsif $::graphite::service_provider == 'systemd' {
+    $base_service_path = '/etc/systemd/system'
+    $service_suffix = 'service'
   }
 
-  file { '/etc/init/carbon-aggregator.conf':
+  file { "${base_service_path}/carbon-aggregator.${service_suffix}":
     ensure  => present,
-    content => template('graphite/upstart/carbon-aggregator.conf'),
+    content => template("graphite/${::graphite::service_provider}/carbon-aggregator.${service_suffix}"),
     mode    => '0444',
   }
 
-  file { '/etc/init/carbon-cache.conf':
+  file { "${base_service_path}/carbon-cache.${service_suffix}":
     ensure  => present,
-    content => template('graphite/upstart/carbon-cache.conf'),
+    content => template("graphite/${::graphite::service_provider}/carbon-cache.${service_suffix}"),
     mode    => '0444',
   }
 
-  file { '/etc/init/graphite-web.conf':
+  file { "${base_service_path}/graphite-web.${service_suffix}":
     ensure  => present,
-    content => template('graphite/upstart/graphite-web.conf'),
+    content => template("graphite/${::graphite::service_provider}/graphite-web.${service_suffix}"),
     mode    => '0444',
   }
 
@@ -138,8 +146,8 @@ class graphite::config {
     refreshonly => true,
     require     => File["${root_dir}/storage"],
     subscribe   => [
-                      File['/etc/init/graphite-web.conf'],
-                      File['/etc/init/carbon-cache.conf'],
+                      File["${base_service_path}/graphite-web.${service_suffix}"],
+                      File["${base_service_path}/carbon-cache.${service_suffix}"],
                       File["${root_dir}/storage"],
                       File["${root_dir}/webapp/graphite"],
                   ],

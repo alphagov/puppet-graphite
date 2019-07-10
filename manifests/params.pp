@@ -14,4 +14,5 @@ class graphite::params {
   $time_zone = 'UTC'
   $django_secret_key = undef
   $memcache_hosts = []
+  $service_provider = 'upstart'
 }
