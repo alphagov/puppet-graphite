@@ -71,7 +71,7 @@ class graphite::config {
         target => '/lib/init/upstart-job',
     }
 
-    $base_service_path = '/etc/init/'
+    $base_service_path = '/etc/init'
     $service_suffix = 'conf'
   } elsif $::graphite::service_provider == 'systemd' {
     $base_service_path = '/etc/systemd/system'
